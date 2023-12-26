@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.wanmi.b2b</groupId>
+        <artifactId>b2b-platform</artifactId>
+        <version>xyy-4.0.9-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.wanmi.sbc</groupId>
+    <artifactId>bff-callback</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <start-class>com.wanmi.sbc.BffCallbackApplication</start-class>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>fastjson</artifactId>
+                    <groupId>com.alibaba</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-tc</artifactId>
+            <version>5.0.2.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>micro-service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-pay-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.codingapi.txlcn</groupId>
+                    <artifactId>txlcn-tc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-order-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-wallet-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-advertising-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-returnOrder-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>kryo-shaded</artifactId>
+                    <groupId>com.esotericsoftware</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>springloaded</artifactId>
+                        <version>1.2.7.RELEASE</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

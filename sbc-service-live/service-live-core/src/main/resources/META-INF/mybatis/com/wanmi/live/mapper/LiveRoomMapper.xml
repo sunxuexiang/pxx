@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.room.dao.LiveRoomMapper">
+
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.room.model.root.LiveRoom">
+    	<result column="live_room_id" jdbcType="BIGINT" property="liveRoomId"/>
+    	<result column="live_room_name" jdbcType="VARCHAR" property="liveRoomName"/>
+    	<result column="img_path" jdbcType="VARCHAR" property="imgPath"/>
+    	<result column="sys_flag" jdbcType="BIGINT" property="sysFlag"/>
+    	<result column="company_id" jdbcType="BIGINT" property="companyId"/>
+    	<result column="create_person" jdbcType="BIGINT" property="createPerson"/>
+    	<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    	<result column="update_person" jdbcType="BIGINT" property="updatePerson"/>
+    	<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    	<result column="del_flag" jdbcType="BIGINT" property="delFlag"/>
+    	<result column="store_id" jdbcType="BIGINT" property="storeId"/>
+    	<result column="room_type" jdbcType="INTEGER" property="roomType"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    live_room_id,live_room_name,img_path,sys_flag,company_id,create_person,create_time,update_person,update_time,del_flag,store_id,room_type
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="getPage" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM live_room
+        <where>
+            1=1
+            <if test="liveRoomId != null">
+                and live_room_id = #{liveRoomId,jdbcType=BIGINT}
+            </if>
+            <if test="liveRoomIdList != null">
+                and live_room_id in
+                <foreach collection="liveRoomIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="storeId != null">
+                and store_id = #{storeId,jdbcType=BIGINT}
+            </if>
+            <if test="liveRoomName != null and liveRoomName != ''">
+                and live_room_name like concat('%',#{liveRoomName},'%')
+            </if>
+            <if test="sysFlag != null">
+                and sys_flag = #{sysFlag,jdbcType=BIGINT}
+            </if>
+            <if test="companyId != null and companyId != ''">
+                and company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+            <if test="createPerson != null">
+                and create_person = #{createPerson,jdbcType=BIGINT}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updatePerson != null">
+                and update_person = #{updatePerson,jdbcType=BIGINT}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+                and del_flag = 0
+            <if test="accountName != null and accountName != ''">
+                and exists ( select live_room_rela_id from live_room_rela where live_room_id = live_room.live_room_id
+                and rela_type = 'A' and rela_content like concat('%',#{accountName},'%') )
+            </if>
+            <if test="brandId != null and brandId != ''">
+                and exists ( select live_room_rela_id from live_room_rela where live_room_id = live_room.live_room_id
+                and rela_type = 'B' and  rela_id = #{brandId,jdbcType=VARCHAR} )
+            </if>
+            <if test="roomType != null">
+                and room_type = #{roomType}
+            </if>
+
+        </where>
+        order by sys_flag ASC, create_time desc
+    </select>
+
+    <select id="getLiveRoomListByCustomerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        r.live_room_id,r.live_room_name,r.img_path,r.sys_flag,r.store_id, r.room_type
+        from live_room r
+        left join live_room_rela lr
+        on r.live_room_id=lr.live_room_id
+        where  lr.rela_type = 'A' and r.del_flag=0 and lr.rela_id=#{customerId}
+        group by lr.live_room_id
+        order by r.create_time desc
+    </select>
+
+    <select id="getBrandIdsByLiveRoomId" parameterType="java.lang.Long">
+    SELECT
+    rr.rela_id
+    FROM
+    live_room r
+    LEFT JOIN `live_room_rela` rr ON r.live_room_id = rr.live_room_id
+    WHERE
+    r.live_room_id = #{liveRoomId} and rr.rela_type="B"
+    </select>
+    <!-- zy-start -->
+    <!-- 查询总数 -->
+    <select id="getPageCount"  resultType="int" parameterType="map">
+        SELECT
+        count(1)
+        FROM live_room
+        <where>
+            1=1
+            <if test="liveRoomId != null">
+                and live_room_id = #{liveRoomId,jdbcType=BIGINT}
+            </if>
+            <if test="liveRoomIdList != null">
+                and live_room_id in
+                <foreach collection="liveRoomIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="storeId != null">
+                and store_id = #{storeId,jdbcType=BIGINT}
+            </if>
+            <if test="liveRoomName != null and liveRoomName != ''">
+                and live_room_name like concat('%',#{liveRoomName},'%')
+            </if>
+            <if test="sysFlag != null">
+                and sys_flag = #{sysFlag,jdbcType=BIGINT}
+            </if>
+            <if test="companyId != null and companyId != ''">
+                and company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+            <if test="createPerson != null">
+                and create_person = #{createPerson,jdbcType=BIGINT}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updatePerson != null">
+                and update_person = #{updatePerson,jdbcType=BIGINT}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+                and del_flag = 0
+            <if test="accountName != null and accountName != ''">
+                and exists ( select live_room_rela_id from live_room_rela where live_room_id = live_room.live_room_id
+                and rela_type = 'A' and rela_content like concat('%',#{accountName},'%') )
+            </if>
+            <if test="brandId != null and brandId != ''">
+                and exists ( select live_room_rela_id from live_room_rela where live_room_id = live_room.live_room_id
+                and rela_type = 'B' and  rela_id = #{brandId,jdbcType=VARCHAR} )
+            </if>
+
+            <if test="employeeAccount != null and employeeAccount != ''">
+                and exists ( select live_room_rela_id from live_room_rela where live_room_id = live_room.live_room_id
+                and rela_type = 'O' and rela_id = #{employeeAccount} )
+            </if>
+            <if test="roomType != null">
+                and room_type = #{roomType}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键查询 -->
+    <select id="getInfo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from live_room
+        where live_room_id = #{roomId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getSysInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from live_room
+        where sys_flag = #{sysFlag} limit 1
+    </select>
+    <!-- 增加 -->
+    <insert id="add" keyColumn="live_room_id" keyProperty="liveRoomId" parameterType="com.wanmi.sbc.live.room.model.root.LiveRoom" useGeneratedKeys="true">
+        insert into live_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="liveRoomName != null">
+                live_room_name,
+            </if>
+            <if test="imgPath != null">
+                img_path,
+            </if>
+            <if test="sysFlag != null">
+                sys_flag,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="createPerson != null">
+                create_person,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updatePerson != null">
+                update_person,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="roomType != null">
+                room_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveRoomName != null">
+                #{liveRoomName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgPath != null">
+                #{imgPath,jdbcType=VARCHAR},
+            </if>
+            <if test="sysFlag != null">
+                #{sysFlag,jdbcType=TINYINT},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=INTEGER},
+            </if>
+            <if test="createPerson != null">
+                #{createPerson,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatePerson != null">
+                #{updatePerson,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=INTEGER},
+            </if>
+            <if test="roomType != null">
+                #{roomType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!-- 修改 -->
+    <update id="modify" parameterType="com.wanmi.sbc.live.room.model.root.LiveRoom">
+        update live_room
+        <set>
+            <if test="liveRoomName != null">
+                live_room_name = #{liveRoomName,jdbcType=VARCHAR},
+            </if>
+            
+            <if test="imgPath != null">
+                img_path = #{imgPath,jdbcType=VARCHAR},
+            </if>
+            <if test="sysFlag != null">
+                sys_flag = #{sysFlag,jdbcType=TINYINT},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=INTEGER},
+            </if>
+            <if test="createPerson != null">
+                create_person = #{createPerson,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatePerson != null">
+                update_person = #{updatePerson,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="roomType != null">
+                room_type = #{roomType,jdbcType=INTEGER},
+            </if>
+        </set>
+        where live_room_id = #{liveRoomId,jdbcType=INTEGER}
+    </update>
+
+    <select id="getListByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from live_room
+        where store_id = #{storeId,jdbcType=INTEGER} and del_flag = 0
+    </select>
+    <!-- zy-end -->
+</mapper>

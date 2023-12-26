@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanmi.sbc.live.activity.dao.LiveBagLogMapper">
+  <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.activity.model.root.LiveBagLog">
+    <id column="live_bag_log_id" jdbcType="INTEGER" property="liveBagLogId" />
+    <result column="live_id" jdbcType="INTEGER" property="liveId" />
+    <result column="bag_id" jdbcType="INTEGER" property="bagId" />
+    <result column="customer_ids" jdbcType="VARCHAR" property="customerIds" />
+    <result column="customer_accounts" jdbcType="VARCHAR" property="customerAccounts" />
+    <result column="ticket_status" jdbcType="INTEGER" property="ticketStatus" />
+    <result column="join_num" jdbcType="INTEGER" property="joinNum" />
+    <result column="ticket_time" jdbcType="TIMESTAMP" property="ticketTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    live_bag_log_id, live_id, bag_id, customer_ids, customer_accounts,ticket_status,join_num, ticket_time, create_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_bag_log
+    where bag_id=#{bagId}
+    order by create_time desc
+     limit 1
+  </select>
+
+  <select id="selectByBagAndTicketStatus" parameterType="com.wanmi.sbc.live.api.request.stream.BagAppRequest" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_bag_log
+    where 1=1
+    <if test="ticketStatus != null">
+     and ticket_status = #{ticketStatus,jdbcType=INTEGER}
+    </if>
+    <if test="liveId != null">
+      and live_id = #{liveId,jdbcType=INTEGER}
+    </if>
+    limit 1
+  </select>
+
+  <insert id="insertSelective" parameterType="com.wanmi.sbc.live.activity.model.root.LiveBagLog">
+    insert into live_bag_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="liveId != null">
+        live_id,
+      </if>
+      <if test="bagId != null">
+        bag_id,
+      </if>
+      <if test="customerIds != null">
+        customer_ids,
+      </if>
+      <if test="customerAccounts != null">
+        customer_accounts,
+      </if>
+      <if test="ticketTime != null">
+        ticket_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="liveId != null">
+        #{liveId,jdbcType=INTEGER},
+      </if>
+      <if test="bagId != null">
+        #{bagId,jdbcType=INTEGER},
+      </if>
+      <if test="customerIds != null">
+        #{customerIds,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAccounts != null">
+        #{customerAccounts,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketTime != null">
+        #{ticketTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="java.lang.Integer" resultType="java.lang.Long">
+    select count(*) from live_bag_log where bag_id=#{bagId}
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.wanmi.sbc.live.activity.model.root.LiveBagLog">
+    update live_bag_log
+    <set>
+      <if test="liveId != null">
+        live_id = #{liveId,jdbcType=INTEGER},
+      </if>
+      <if test="bagId != null">
+        bag_id = #{bagId,jdbcType=INTEGER},
+      </if>
+      <if test="customerIds != null">
+        customer_ids = #{customerIds,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAccounts != null">
+        customer_accounts = #{customerAccounts,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketStatus != null">
+        ticket_status = #{ticketStatus,jdbcType=INTEGER},
+      </if>
+      <if test="joinNum != null">
+        join_num = #{joinNum,jdbcType=INTEGER},
+      </if>
+      <if test="ticketTime != null">
+        ticket_time = #{ticketTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where live_bag_log_id = #{liveBagLogId,jdbcType=INTEGER}
+  </update>
+</mapper>

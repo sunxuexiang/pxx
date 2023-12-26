@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.stream.dao.LiveStreamMapper">
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.stream.model.root.LiveStream">
+        <id property="liveId" column="live_id"/>
+        <result property="liveRoomId" column="live_room_id"/>
+        <result property="streamName" column="stream_name"/>
+        <result property="roomName" column="room_name"/>
+        <result property="anchorName" column="anchor_name"/>
+        <result property="sourceChannel" column="source_channel"/>
+        <result property="coverUrl" column="cover_url"/>
+        <result property="notification" column="notification"/>
+        <result property="enableFlag" column="enable_flag"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="customerAccount" column="customer_account"/>
+        <result property="faceUrl" column="face_url"/>
+        <result property="groupId" column="group_id"/>
+        <result property="pushUrl" column="push_url"/>
+        <result property="liveUrl" column="live_url"/>
+        <result property="liveStatus" column="live_status"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="viewerNumber" column="viewer_number"/>
+        <result property="addPurchseNumber" column="add_purchse_number"/>
+        <result property="oncePurchseNumber" column="once_purchse_number"/>
+        <result property="couponGetNumber" column="coupon_get_number"/>
+        <result property="mediaUrl" column="media_url"/>
+        <result property="storeId" column="store_id"/>
+        <result property="goodsInfoId" column="goods_info_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="bagId" column="bag_id"/>
+        <result property="sysFlag" column="sys_flag"/>
+        <result property="eventType" column="event_type"/>
+        <result property="errcode" column="errcode"/>
+        <result property="errmsg" column="errmsg"/>
+        <result property="eventTime" column="event_time"/>
+        <result column="room_type" jdbcType="INTEGER" property="roomType"/>
+    </resultMap>
+
+    <resultMap id="BaseResultLogMap" type="com.wanmi.sbc.live.bean.vo.LiveHaveGoodsVO">
+        <result column="live_room_id" jdbcType="BIGINT" property="liveRoomId"/>
+        <result property="explainFlag" column="explain_flag"/>
+        <result property="sysFlag" column="sys_flag"/>
+        <result property="liveId" column="live_id"/>
+    </resultMap>
+
+    <sql id="live_stream_col">
+        live_id,live_room_id,stream_name,room_name,anchor_name,source_channel,cover_url,notification,enable_flag,customer_id,customer_account,face_url,group_id,push_url,live_url,live_status,start_time,end_time,
+        viewer_number,add_purchse_number,once_purchse_number,coupon_get_number,media_url,store_id,goods_info_id,activity_id,coupon_id,bag_id,sys_flag,event_type,errcode,errmsg,event_time,room_type
+    </sql>
+
+    <select id="selectLiveRoomIdByLiveTime" resultType="java.lang.Long">
+        select distinct live_room_id from live_stream where 1=1 and live_status = 2
+           <choose>
+               <when test="startTime != null and endTime != null">
+                   and start_time between #{startTime} and #{endTime}
+               </when>
+               <when test="startTime != null and endTime == null">
+                   and start_time &gt;= #{startTime}
+               </when>
+                <otherwise>
+                    and end_time &lt; #{endTime}
+                </otherwise>
+           </choose>
+
+    </select>
+
+
+    <select id="selectDetailByLiveTime" resultMap="BaseResultMap">
+        select * from live_stream where live_id in (
+        select max(live_id) from live_stream where 1=1 and live_status = 2
+        <choose>
+            <when test="startTime != null and endTime != null">
+                and start_time between #{startTime} and #{endTime}
+            </when>
+            <when test="startTime != null and endTime == null">
+                and start_time &gt;= #{startTime}
+            </when>
+            <otherwise>
+                and end_time &lt; #{endTime}
+            </otherwise>
+        </choose>
+        group by live_room_id
+        )
+    </select>
+
+    <select id="selectLastLiveByRoomIds" resultMap="BaseResultMap">
+        select * from live_stream where live_id in (
+            select max(live_id) from live_stream where 1=1 and live_room_id in
+                <foreach collection="roomIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            and live_status = 2
+            group by live_room_id
+        )
+    </select>
+
+    <select id="selectByLiveTime" resultMap="BaseResultMap">
+        select * from live_stream where 1=1 and live_status = 2
+        <if test="storeId != null">
+            and store_id = #{storeId}
+        </if>
+        <if test="liveRoomIdList != null">
+            and live_room_id in
+            <foreach collection="liveRoomIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <choose>
+            <when test="startTime != null and endTime != null">
+                and start_time between #{startTime} and #{endTime}
+            </when>
+            <when test="startTime != null and endTime == null">
+                and start_time &gt;= #{startTime}
+            </when>
+            <when test="startTime == null and endTime != null">
+                and end_time &lt; #{endTime}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by customer_account desc, end_time desc
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="live_stream_col" />
+        from live_stream
+        where live_id = #{liveId}
+    </select>
+
+    <select id="selectByInfoRequest" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="live_stream_col" />
+        from live_stream
+        where 1=1
+        <if test="record.liveId != null">
+            and `live_id` = #{record.liveId}
+        </if>
+        <if test="record.liveStatus != null">
+            and `live_status` = #{record.liveStatus}
+        </if>
+        <if test="record.liveRoomId != null">
+            and `live_room_id` = #{record.liveRoomId}
+        </if>
+        <if test="record.streamName != null">
+            and `stream_name` = #{record.streamName}
+        </if>
+
+        <if test="record.sysFlag != null">
+            and `sys_flag` = #{record.sysFlag}
+        </if>
+
+        <if test="record.sourceChannel != null">
+            and `source_channel` = #{record.sourceChannel}
+        </if>
+        <if test="record.roomType != null">
+            and `room_type` = #{record.roomType}
+        </if>
+        <if test="record.storeId != null">
+            and store_id = #{record.storeId}
+        </if>
+        order by start_time desc
+        limit 1
+    </select>
+
+    <select id="selectBySysRequest" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="live_stream_col" />
+        from live_stream
+        where 1=1
+        <if test="record.liveId != null">
+            and `live_id` = #{record.liveId}
+        </if>
+        <if test="record.liveStatus != null">
+            and `live_status` = #{record.liveStatus}
+        </if>
+        <if test="record.liveRoomId != null">
+            and `live_room_id` = #{record.liveRoomId}
+        </if>
+        <if test="record.streamName != null">
+            and `stream_name` = #{record.streamName}
+        </if>
+
+        <if test="record.sysFlag != null">
+            and `sys_flag` = #{record.sysFlag}
+        </if>
+
+        <if test="record.sourceChannel != null">
+            and `source_channel` = #{record.sourceChannel}
+        </if>
+        <if test="record.roomType != null">
+            and `room_type` = #{record.roomType}
+        </if>
+        order by start_time desc
+        limit 1
+    </select>
+
+    <select id="pageListByLiveStreamReq" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="live_stream_col" />
+        from live_stream
+        where 1=1
+        <if test="record.roomName != null and record.roomName !=''">
+          and `room_name`  like concat('%',#{record.roomName},'%')
+        </if>
+        <if test="record.liveRoomId != null">
+            and `live_room_id` = #{record.liveRoomId}
+        </if>
+        <if test="record.liveStatus != null">
+            and `live_status` = #{record.liveStatus}
+        </if>
+        <if test="record.startTime != null and record.startTime != '' and record.endTime != null and record.endTime != ''">
+
+            <![CDATA[  and DATE_FORMAT(start_time, '%Y-%m-%d') >=
+                        DATE_FORMAT(#{record.startTime} , '%Y-%m-%d')    ]]>
+
+            <![CDATA[  and DATE_FORMAT(end_time, '%Y-%m-%d') <=
+                        DATE_FORMAT(#{record.endTime} , '%Y-%m-%d')    ]]>
+        </if>
+        <if test="record.roomType != null">
+            and `room_type` = #{record.roomType}
+        </if>
+        order by start_time desc
+        LIMIT #{record.pageNum,jdbcType=INTEGER},#{record.pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="liveBroadcastSquare" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="live_stream_col" />,
+        (
+        CASE
+        WHEN  live_status = 1 THEN  10
+        WHEN  live_status = 2 THEN  2
+        WHEN  live_status = 0 THEN  0
+        END
+        ) status_sort
+        from live_stream
+        where 1=1
+        and live_id IN ( SELECT MAX( live_id ) FROM live_stream GROUP BY live_room_id )
+        <if test="record.roomName != null and record.roomName !=''">
+            and (`room_name`  like concat('%',#{record.roomName},'%') or `live_room_id`  like concat('%',#{record.roomName},'%') )
+        </if>
+        <if test="record.storeId != null">
+            and `store_id`  = #{record.storeId}
+        </if>
+        and `live_status` <![CDATA[ >= ]]> 1
+        and `sys_flag` <![CDATA[ <= ]]> 1
+        order by status_sort desc, start_time desc
+        LIMIT #{record.pageNum,jdbcType=INTEGER},#{record.pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="pageCountLiveBroadcastSquare" resultType="int" parameterType="map">
+        select
+        count(1)
+        from  live_stream
+        where 1=1
+        and live_id IN ( SELECT MAX( live_id ) FROM live_stream GROUP BY live_room_id )
+        <if test="record.roomName != null and record.roomName !=''">
+            and (`room_name`  like concat('%',#{record.roomName},'%') or `live_room_id`  like concat('%',#{record.roomName},'%') )
+        </if>
+        <if test="record.storeId != null">
+            and `store_id`  = #{record.storeId}
+        </if>
+        and `live_status` <![CDATA[ >= ]]>  1
+        and `sys_flag` <![CDATA[ <= ]]> 1
+        order by start_time desc
+    </select>
+
+    <select id="pageCountByLiveStreamReq" resultType="int" parameterType="map">
+        select
+        count(1)
+        from live_stream
+        where 1=1
+        <if test="record.roomName != null">
+            and `room_name` = #{record.roomName}
+        </if>
+        <if test="record.liveStatus != null">
+            and `live_status` = #{record.liveStatus}
+        </if>
+        <if test="record.liveRoomId != null">
+            and `live_room_id` = #{record.liveRoomId}
+        </if>
+        <if test="record.startTime != null and record.startTime != '' and record.endTime != null and record.endTime != ''">
+            <![CDATA[  and DATE_FORMAT(start_time, '%Y-%m-%d') >=
+                        DATE_FORMAT(#{record.startTime} , '%Y-%m-%d')    ]]>
+
+            <![CDATA[  and DATE_FORMAT(end_time, '%Y-%m-%d') <=
+                        DATE_FORMAT(#{record.endTime} , '%Y-%m-%d')    ]]>
+        </if>
+        <if test="record.roomType != null">
+            and `room_type` = #{record.roomType}
+        </if>
+    </select>
+
+    <select id="findLiveByGoodsInfoId" resultMap="BaseResultLogMap" parameterType="java.lang.String">
+    SELECT
+	ls.live_room_id,ls.live_id,ls.sys_flag,sg.explain_flag
+    FROM
+	live_stream ls
+	LEFT JOIN live_stream_goods sg ON ls.live_room_id = sg.live_id
+    WHERE
+	ls.live_status = 1
+	AND sg.goods_info_id = #{goodsInfoId}
+	GROUP BY ls.live_room_id
+	order by explain_flag desc,ls.sys_flag desc
+    </select>
+
+    <insert id="insertSelective" keyColumn="live_id" keyProperty="liveId" parameterType="com.wanmi.sbc.live.stream.model.root.LiveStream" useGeneratedKeys="true">
+        insert into live_stream
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="streamName != null">
+                stream_name,
+            </if>
+            <if test="liveRoomId != null">
+                live_room_id,
+            </if>
+            <if test="roomName != null">
+                room_name,
+            </if>
+            <if test="anchorName != null">
+                anchor_name,
+            </if>
+            <if test="coverUrl != null">
+                cover_url,
+            </if>
+            <if test="sourceChannel != null">
+                source_channel,
+            </if>
+            <if test="notification != null">
+                notification,
+            </if>
+            <if test="enableFlag != null">
+                enable_flag,
+            </if>
+            <if test="customerId != null">
+                customer_id,
+            </if>
+            <if test="customerAccount != null">
+                customer_account,
+            </if>
+            <if test="faceUrl != null">
+                face_url,
+            </if>
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="pushUrl != null">
+                push_url,
+            </if>
+            <if test="liveUrl != null">
+                live_url,
+            </if>
+            <if test="liveStatus != null">
+                live_status,
+            </if>
+            <if test="sysFlag != null">
+                sys_flag,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="viewerNumber != null">
+                viewer_number,
+            </if>
+            <if test="addPurchseNumber != null">
+                add_purchse_number,
+            </if>
+            <if test="oncePurchseNumber != null">
+                once_purchse_number,
+            </if>
+            <if test="couponGetNumber != null">
+                coupon_get_number,
+            </if>
+            <if test="mediaUrl != null">
+                media_url,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="goodsInfoId != null">
+                goods_info_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="roomType != null">
+                room_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">
+                #{liveId,jdbcType=BIGINT},
+            </if>
+            <if test="streamName != null">
+                #{streamName,jdbcType=VARCHAR},
+            </if>
+            <if test="liveRoomId != null">
+                #{liveRoomId,jdbcType=BIGINT},
+            </if>
+            <if test="roomName != null">
+                #{roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="anchorName != null">
+                #{anchorName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="coverUrl != null">
+                #{coverUrl,jdbcType=VARCHAR},
+            </if>
+
+            <if test="sourceChannel != null">
+                #{sourceChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="notification != null">
+                #{notification,jdbcType=VARCHAR},
+            </if>
+            <if test="enableFlag != null">
+                #{enableFlag,jdbcType=BIGINT},
+            </if>
+            <if test="customerId != null">
+                #{customerId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerAccount != null">
+                #{customerAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="faceUrl != null">
+                #{faceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=VARCHAR},
+            </if>
+            <if test="pushUrl != null">
+                #{pushUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="liveUrl != null">
+                #{liveUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="liveStatus != null">
+                #{liveStatus,jdbcType=BIGINT},
+            </if>
+
+            <if test="sysFlag != null">
+                #{sysFlag,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="viewerNumber != null">
+                #{viewerNumber,jdbcType=BIGINT},
+            </if>
+            <if test="addPurchseNumber != null">
+                #{addPurchseNumber,jdbcType=BIGINT},
+            </if>
+            <if test="oncePurchseNumber != null">
+                #{oncePurchseNumber,jdbcType=BIGINT},
+            </if>
+            <if test="couponGetNumber != null">
+                #{couponGetNumber,jdbcType=BIGINT},
+            </if>
+            <if test="mediaUrl != null">
+                #{mediaUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsInfoId != null">
+                #{goodsInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roomType != null">
+                #{roomType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="map">
+        update live_stream
+        <set>
+            <if test="record.liveId != null">
+                `live_id` = #{record.liveId,jdbcType=BIGINT},
+            </if>
+            <if test="record.streamName != null">
+                `stream_name` = #{record.streamName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.roomName != null">
+                `room_name` = #{record.roomName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.anchorName != null">
+                `anchor_name` = #{record.anchorName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.notification != null">
+                `notification` = #{record.notification,jdbcType=VARCHAR},
+            </if>
+            <if test="record.enableFlag != null">
+                `enable_flag` = #{record.enableFlag,jdbcType=BIT},
+            </if>
+            <if test="record.customerId != null">
+                `customer_id` = #{record.customerId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.customerAccount != null">
+                `customer_account` = #{record.customerAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="record.faceUrl != null">
+                `face_url` = #{record.faceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.groupId != null">
+                `group_id` = #{record.groupId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.pushUrl != null">
+                `push_url` = #{record.pushUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.liveUrl != null">
+                `live_url` = #{record.liveUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.liveStatus != null">
+                `live_status` = #{record.liveStatus,jdbcType=BIT},
+            </if>
+            <if test="record.startTime != null">
+                `start_time` = #{record.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.endTime != null">
+                `end_time` = #{record.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.viewerNumber != null">
+                `viewer_number` = #{record.viewerNumber,jdbcType=BIGINT},
+            </if>
+            <if test="record.addPurchseNumber != null">
+                `add_purchse_number` = #{record.addPurchseNumber,jdbcType=BIGINT},
+            </if>
+            <if test="record.oncePurchseNumber != null">
+                `once_purchse_number` = #{record.oncePurchseNumber,jdbcType=BIGINT},
+            </if>
+            <if test="record.couponGetNumber != null">
+                `coupon_get_number` = #{record.couponGetNumber,jdbcType=BIGINT},
+            </if>
+            <if test="record.mediaUrl != null">
+                `media_url` = #{record.mediaUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.storeId != null">
+                `store_id` = #{record.storeId,jdbcType=BIGINT},
+            </if>
+            <if test="record.goodsInfoId != null">
+                `goods_info_id` = #{record.goodsInfoId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="record.activityId != null">
+                `activity_id` = #{record.activityId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="record.couponId != null">
+                `coupon_id` = #{record.couponId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bagId != null">
+                `bag_id` = #{record.bagId,jdbcType=BIGINT},
+            </if>
+            <if test="record.createTime != null">
+                `create_time` = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.createPerson != null">
+                `create_person` = #{record.createPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="record.updateTime != null">
+                `update_time` = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="record.errcode != null">
+                `errcode` = #{record.errcode,jdbcType=BIGINT},
+            </if>
+            <if test="record.errmsg != null">
+                `errmsg` = #{record.errmsg,jdbcType=VARCHAR},
+            </if>
+            <if test="record.eventType != null">
+                `event_type` = #{record.eventType,jdbcType=BIGINT},
+            </if>
+            <if test="record.eventTime != null">
+                `event_time` = #{record.eventTime,jdbcType=BIGINT},
+            </if>
+            <if test="record.roomType != null">
+                room_type = #{record.roomType,jdbcType=INTEGER},
+            </if>
+        </set>
+        where  live_id = #{record.liveId,jdbcType=BIGINT}
+    </update>
+
+    <select id="getStoreLiveList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="live_stream_col" />,
+        (
+        CASE
+        WHEN  live_status = 1 THEN  10
+        WHEN  live_status = 2 THEN  2
+        WHEN  live_status = 0 THEN  0
+        END
+        ) status_sort
+        from live_stream
+        where 1=1
+        and live_id IN ( SELECT MAX( live_id ) FROM live_stream where 1=1
+            <if test="record.storeId != null">
+                and store_id = #{record.storeId}
+            </if>  GROUP BY live_room_id )
+        and live_status &gt; 0
+        order by status_sort desc, start_time desc
+        LIMIT #{record.pageNum,jdbcType=INTEGER},#{record.pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="countStoreLiveList" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(1)
+        from live_stream
+        where 1=1
+        and live_id IN ( SELECT MAX( live_id ) FROM live_stream where 1=1
+        <if test="record.storeId != null">
+            and store_id = #{record.storeId}
+        </if>  GROUP BY live_room_id )
+        and live_status &gt; 0
+    </select>
+
+    <select id="selectLiveStoreIds" resultType="java.lang.Long">
+        select store_id from live_stream where live_status = 1
+    </select>
+
+    <select id="selectLivingRomeList" resultMap="BaseResultMap">
+        select * from live_stream where live_status = 1
+    </select>
+
+    <delete id="deleteByLiveId" parameterType="java.lang.Integer">
+        delete from live_stream where live_id = #{liveId}
+    </delete>
+
+    <select id="getLiveStreamEditInfoByRoomId" resultMap="BaseResultMap">
+        select * from live_stream where live_room_id = #{liveRoomId} order by live_id desc limit 0,1
+    </select>
+</mapper>

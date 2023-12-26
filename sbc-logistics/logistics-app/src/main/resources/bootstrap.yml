@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 172.31.56.143:8848
+        prefix: sbc-logistics
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        enabled: true
+        namespace:
+      discovery:
+        namespace:
+        server-addr: 172.31.56.143:8848

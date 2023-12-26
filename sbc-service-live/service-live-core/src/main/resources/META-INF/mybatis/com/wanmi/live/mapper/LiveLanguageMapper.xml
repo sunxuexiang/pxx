@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.stream.dao.LiveLanguageMapper">
+
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.stream.model.root.LiveLanguage">
+    	<result column="language_id" jdbcType="BIGINT" property="languageId"/>
+    	<result column="message" jdbcType="VARCHAR" property="message"/>
+    </resultMap>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select * from live_language
+    </select>
+</mapper>

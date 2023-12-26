@@ -1,0 +1,6 @@
+/goods/devanning/spuGoodsAttribute/**,/platform-goods/index-all-search
+
+
+ALTER TABLE `store_cate_goods_rela`
+DROP PRIMARY KEY;
+

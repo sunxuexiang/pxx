@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.ares.screen.dao.BigScreenMapper">
+
+    <!--批量生成订单数据-->
+    <insert id="saveScreenOrderBatch" >
+        insert into screen_order(create_time,account,price,address,ware_house_code,order_id,init_type) value
+        <foreach collection="screenOrders" item="screenOrder" separator=",">
+            (#{screenOrder.createTime},#{screenOrder.account},#{screenOrder.price},#{screenOrder.address},#{screenOrder.wareHouseCode},#{screenOrder.orderId},1)
+        </foreach>
+    </insert>
+
+    <!--批量生成订单详情-->
+    <insert id="saveScreenOrderDetailBatch">
+        insert into screen_order_detail(order_id,product_num,product_price,cate_id,cate_name,create_time,init_type) value
+        <foreach collection="orderDetails" item="orderDetail" separator=",">
+            (#{orderDetail.orderId},#{orderDetail.productNum},#{orderDetail.productPrice},#{orderDetail.cateId},#{orderDetail.cateName},
+            #{orderDetail.createTime},1)
+        </foreach>
+    </insert>
+
+    <resultMap id="toadyPreSleDataMap" type="com.wanmi.ares.response.screen.PreSaleDataResponse">
+        <result property="todayTotalNum" column="total_num"/>
+        <result property="todayTotalMoney" column="total_money"/>
+    </resultMap>
+
+    <!--查询今日预售数据-->
+    <select id="queryTodayPreSaleData" parameterType="java.lang.String" resultMap="toadyPreSleDataMap">
+        select count(*) as 'total_num', sum(price) as 'total_money'
+        from screen_order where create_time <![CDATA[ <= ]]> #{today}
+    </select>
+
+    <resultMap id="RealTimeOrderMap" type="com.wanmi.ares.response.screen.RealTimeOrderResponse">
+        <result property="createTime" column="create_time"/>
+        <result property="address" column="address"/>
+        <result property="account" column="account"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <select id="queryRealTimeOrder" resultMap="RealTimeOrderMap">
+        select date_format(now(), '%m-%d %H:%i:%S')                    as 'create_time',
+                concat(substr(account, 1, length(account) - 4), '****') as 'account',
+                concat(address,'******') as address,
+                price
+        from screen_order
+            where date_format(create_time,'%Y-%m-%d %H:%i:%S') = #{dateTime}
+    </select>
+
+
+    <!--查询区域预售金额分析-->
+    <select id="queryAreaPreSaleTotalMoney" resultType="java.util.Map">
+        select sum(price) as 'total',ware_house_code as 'ware' from screen_order where create_time <![CDATA[ <= ]]> now() group by ware_house_code
+    </select>
+
+
+    <select id="queryCateSaleTotalPrice" resultType="java.util.Map">
+        select sum(price) as 'total_price' from screen_order;
+    </select>
+
+
+    <select id="queryCateSale" resultType="java.util.Map">
+        select sum(product_price*product_num) as 'sale_price', cate_name
+        from screen_order_detail
+        where create_time <![CDATA[ <= ]]> now()
+        group by cate_name
+    </select>
+
+    <select id="queryScreenLastTime" resultType="java.util.Map">
+        select date_format(max(create_time),'%Y-%m-%d %H:%i:%S') as 'last' from screen_order
+    </select>
+
+    <delete id="deleteScreenOrder">
+        delete from screen_order where init_type = 1
+    </delete>
+
+    <delete id="deleteScreenOrderDetail">
+        delete from screen_order_detail where init_type = 1
+    </delete>
+
+    <update id="initScreenOrder">
+        update screen_order set create_time = now() where init_type = 0
+    </update>
+
+    <update id="initScreenOrderDetail">
+        update screen_order_detail set create_time = now() where init_type = 0
+    </update>
+</mapper>

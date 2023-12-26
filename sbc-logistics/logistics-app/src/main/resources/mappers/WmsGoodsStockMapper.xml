@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.logisticscore.dao.WmsGoodsStockMapper">
+
+
+    <resultMap id="WmsGoodsStockMap" type="com.wanmi.sbc.logisticscore.entity.WmsGoodsStock">
+        <result property="warehouseId" column="WAREHOUSEID"/>
+        <result property="sku" column="SKU"/>
+        <result property="qty" column="QTY"/>
+        <result property="batchNo" column="LOTATT01"/>
+        <result property="erpWareId" column="LOTATT04"/>
+    </resultMap>
+
+    <select id="findAllWmsStock" resultMap="WmsGoodsStockMap">
+        select WAREHOUSEID,
+        SKU,
+        QTY,
+        LOTATT01,
+        LOTATT04
+        from INAQQ
+        <if test="wareHouseCode != null">
+            where WAREHOUSEID = #{wareHouseCode}
+        </if>
+    </select>
+
+
+    <!--批量更新wms库存-->
+    <update id="saveOrUpdateWmsStock">
+        replace into wms_goods_stock(sku, ware_house_id, qty, batch_no, erp_ware_id)
+        value
+        <foreach collection="allWmsStock" separator="," open="" close="" item="wmsStock">
+            (#{wmsStock.sku},#{wmsStock.warehouseId},#{wmsStock.qty},#{wmsStock.batchNo},#{wmsStock.erpWareId})
+        </foreach>
+    </update>
+
+
+</mapper>

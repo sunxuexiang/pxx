@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wanmi</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.1.11-RELEASE</version>
+    </parent>
+
+    <groupId>com.wanmi.sbc</groupId>
+    <artifactId>service-es</artifactId>
+    <version>xyy-4.0.9-SNAPSHOT</version>
+
+    <properties>
+        <wm.micro.service.version>xyy-4.0.9-SNAPSHOT</wm.micro.service.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-goods-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-marketing-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-customer-api</artifactId>
+            <version>${wm.micro.service.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>archaius-core</artifactId>
+                    <groupId>com.netflix.archaius</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-databind</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-core</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <username>${git.username}</username>
+                    <password>${git.password}</password>
+                    <tagNameFormat>service-es-v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <connection>scm:git:http://172.19.25.151/sbc-micro-service/sbc-service-es.git</connection>
+        <developerConnection>scm:git:http://172.19.25.151/sbc-micro-service/sbc-service-es.git</developerConnection>
+        <url>http://172.19.25.151/sbc-micro-service/sbc-service-es.git</url>
+      <tag>HEAD</tag>
+  </scm>
+
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>nexus</id>-->
+<!--            <name>local private nexus</name>-->
+<!--            <url>http://maven.ningpai.com/nexus/content/groups/public/</url>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>always</updatePolicy>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>always</updatePolicy>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>nexus repository</id>-->
+<!--            <name>intranet public groups</name>-->
+<!--            <url>http://nexus.dev.qianmi.com/nexus/content/groups/public</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>qianmi-snapshots</id>-->
+<!--            <name>intranet public snapshots</name>-->
+<!--            <url>http://nexus.dev.qianmi.com/nexus/content/repositories/snapshots</url>-->
+<!--            <snapshots>-->
+<!--                <updatePolicy>always</updatePolicy>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>central</id>-->
+<!--            <url>http://nexus.dev.qianmi.com/nexus/content/groups/public</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>nexus-snapshots</id>-->
+<!--            <name>snapshots</name>-->
+<!--            <url>http://maven.ningpai.com/nexus/content/repositories/snapshots/</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>releases</id>-->
+<!--            <name>snapshots</name>-->
+<!--            <url>http://maven.ningpai.com/nexus/content/repositories/releases/</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>releases</id>-->
+<!--            <name>local private nexus</name>-->
+<!--            <url>http://maven.ningpai.com/nexus/content/repositories/releases/</url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>snapshots</id>-->
+<!--            <name>local private nexus</name>-->
+<!--            <url>http://maven.ningpai.com/nexus/content/repositories/snapshots/</url>-->
+<!--        </snapshotRepository>-->
+<!--    </distributionManagement>-->
+    <repositories>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

@@ -1,0 +1,33 @@
+package com.wanmi.sbc.returnorder.api.request.purchase;
+
+import com.wanmi.sbc.customer.bean.vo.CustomerVO;
+import com.wanmi.sbc.returnorder.bean.dto.PurchaseCalcAmountDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * <p>购物车价格计算请求参数</p>
+ * author: sunkun
+ * Date: 2018-11-30
+ */
+@Data
+@ApiModel
+public class PurchaseCalcAmountRequest implements Serializable {
+
+    private static final long serialVersionUID = -5594709398789761599L;
+
+    @ApiModelProperty(value = "商品信息")
+    private List<String> goodsInfoIds;
+
+    @ApiModelProperty(value = "采购单信息")
+    @NotNull
+    private PurchaseCalcAmountDTO purchaseCalcAmount;
+
+    @ApiModelProperty(value = "会员信息")
+    private CustomerVO customerVO;
+}

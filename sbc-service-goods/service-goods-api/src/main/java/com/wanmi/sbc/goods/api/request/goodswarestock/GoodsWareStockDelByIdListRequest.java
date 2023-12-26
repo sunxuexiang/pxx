@@ -1,0 +1,36 @@
+package com.wanmi.sbc.goods.api.request.goodswarestock;
+
+import com.wanmi.sbc.goods.api.request.GoodsBaseRequest;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import java.util.List;
+
+/**
+ * <p>批量删除sku分仓库存表请求参数</p>
+ * @author zhangwenchang
+ * @date 2020-04-06 17:22:56
+ */
+@ApiModel
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GoodsWareStockDelByIdListRequest extends GoodsBaseRequest {
+private static final long serialVersionUID = 1L;
+
+	/**
+	 * 批量删除-主键List
+	 */
+	@ApiModelProperty(value = "批量删除-主键List")
+	@NotEmpty
+	private List<Long> idList;
+	/**
+	 * 店铺id
+	 */
+	@ApiModelProperty(value = "店铺id")
+	private Long storeId;
+}

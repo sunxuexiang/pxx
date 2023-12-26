@@ -1,0 +1,257 @@
+# 测试：111.23.139.237
+spring:
+#  datasource:
+#    url: jdbc:mysql://111.23.139.237:3306/sbc-bff?characterEncoding=UTF-8&&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&connectTimeout=0&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: Xyy2021
+#  data:
+#    mongodb:
+#      host: 192.168.1.15
+#      port: 27017
+#      database: s2b
+#    elasticsearch:
+#      cluster-name: elasticsearch
+#      cluster-nodes: 192.168.1.15:9300
+#  elasticsearch:
+#    rest:
+#      uris: ["http://192.168.1.15:9200"]
+#  redis:
+#    host: 192.168.1.15
+#    port: 6379
+#    password: 123456
+#    database: 0
+#  rabbitmq:
+#    host: 192.168.1.15
+#    port: 5672
+#    username: guest
+#    password: guest
+#  cloud:
+#    stream:
+#      default:
+#        group: group-1
+#    nacos:
+#      discovery:
+#        server-addr: 192.168.1.15:8848
+#      config:
+#        enabled: false
+#
+#redis:
+#  config:
+#    password: 123456
+#    address: 192.168.1.15:6379
+#    connectionPoolSize: 500
+#    database: 0
+#    idleConnectionTimeout: 5000
+#    connectTimeout: 5000
+#
+#redisson:
+#  url: 192.168.1.15:6379
+#  database: 0
+#  password: 123456
+#
+#
+#tx-lcn:
+#  client:
+#    manager-address: 192.168.1.15:8070
+
+### xxl-job log path：执行器运行日志文件存储的磁盘位置，需要对该路径拥有读写权限
+### xxl-job log retention days：执行器Log文件定期清理功能，指定日志保存天数，日志文件过期自动删除。限制至少保持3天，否则功能不生效；
+#xxl:
+#  job:
+#    executor:
+#      logpath: /Users/wanggang/logs
+#      logretentiondays: 3
+
+
+application:
+  ares:
+    name: sbc-ares
+  pay:
+    name: sbc-service-pay
+  setting:
+    name: sbc-service-setting
+  customer:
+    name: sbc-service-customer
+  account:
+    name: sbc-service-account
+  wms:
+    name: sbc-service-wms
+  message:
+    name: sbc-service-message
+  goods:
+    name: sbc-service-goods
+  marketing:
+    name: sbc-service-marketing
+  order:
+    name: sbc-service-order
+  auth:
+    name: sbc-service-auth
+  vas:
+    name: sbc-service-vas
+
+---
+# # ares service
+spring:
+  profiles: ares
+  application:
+    name: sbc-ares
+mysql:
+  dbname: s2b_statistics
+---
+ # auth service
+spring:
+  profiles: auth
+  application:
+    name: sbc-service-auth
+mysql:
+  dbname: sbc-auth
+
+---
+# setting service
+spring:
+  profiles: setting
+  application:
+    name: sbc-service-setting
+mysql:
+  dbname: sbc-setting
+
+---
+# pay service
+spring:
+  profiles: pay
+  application:
+    name: sbc-service-pay
+mysql:
+  dbname: sbc-pay
+---
+# customer service
+spring:
+  profiles: customer
+  application:
+    name: sbc-service-customer
+mysql:
+  dbname: sbc-customer
+---
+# account service
+spring:
+  profiles: account
+  application:
+    name: sbc-service-account
+mysql:
+  dbname: sbc-account
+
+---
+# goods service
+spring:
+  profiles: goods
+  application:
+    name: sbc-service-goods
+mysql:
+  dbname: sbc-goods
+
+---
+# order service
+spring:
+  profiles: message
+  application:
+    name: sbc-service-message
+mysql:
+  dbname: sbc-message
+
+---
+# marketing service
+spring:
+  profiles: marketing
+  application:
+    name: sbc-service-marketing
+mysql:
+  dbname: sbc-marketing
+
+---
+# order service
+spring:
+  profiles: order
+  application:
+    name: sbc-service-order
+mysql:
+  dbname: sbc-order
+
+---
+# wms service
+spring:
+  profiles: wms
+  application:
+    name: sbc-service-wms
+mysql:
+  dbname: sbc-wms
+
+---
+# order service
+spring:
+  profiles: vas
+  application:
+    name: sbc-service-vas
+mysql:
+  dbname: sbc-vas
+
+---
+# site bff
+spring:
+  profiles: site
+  application:
+    name: sbc-site
+mysql:
+  dbname: sbc-bff
+
+---
+# mobile bff
+spring:
+  profiles: mobile
+  application:
+    name: sbc-mobile-lc
+mysql:
+  dbname: sbc-bff
+
+---
+spring:
+  profiles: provider
+  application:
+    name: sbc-provider
+mysql:
+  dbname: sbc-bff
+
+---
+# supplier bff
+spring:
+  profiles: supplier
+  application:
+    name: sbc-supplier
+mysql:
+  dbname: sbc-bff
+
+---
+# boss bff
+spring:
+  profiles: boss
+  application:
+    name: sbc-boss
+mysql:
+  dbname: sbc-bff
+
+---
+# pc bff
+spring:
+  profiles: pc
+  application:
+    name: sbc-pc
+mysql:
+  dbname: sbc-bff
+
+---
+# sso bff
+spring:
+  profiles: sso
+  application:
+    name: sbc-sso
+mysql:
+  dbname: sbc-auth

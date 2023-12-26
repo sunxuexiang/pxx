@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ares" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/mongo-capture" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/perseus" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-logistics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-osd" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-platform" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-account" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-advertising" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-common" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-customer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-elastic" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-goods" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-live" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-marketing" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-message" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-order" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-pay" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-returnOrder" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-setting" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-shopcart" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sbc-service-wallet" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/service-wms" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/wm-micro-service" vcs="Git" />
+  </component>
+</project>

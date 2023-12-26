@@ -1,0 +1,2 @@
+-- 权限
+INSERT INTO `sbc-setting`.authority (authority_id, system_type_cd, function_id, authority_title, authority_name, authority_url, request_type, remark, sort, create_time, del_flag) VALUES ('ff808081784191c9017845e1fc370000', 4, 'fc926c5f3fe311e9828800163e0fc468', '商品评价开关', null, '/boss/config/audit/goods-evaluate/*', 'POST', null, 23, '2021-03-18 23:09:01', 0);

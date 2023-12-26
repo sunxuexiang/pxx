@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.ares.replay.trade.dao.ReplayTradeMapper">
+
+
+    <select id="tradeSevenDaySaleStatistic" parameterType="com.wanmi.ares.replay.trade.model.request.ReplayTradeSevenDayRequest" resultType="com.wanmi.ares.replay.trade.model.response.ReplayTradeSevenDayResponse">
+        SELECT
+        DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+        IFNULL( sum( t.total_price ), 0 ) totalPrice
+        FROM
+        `s2b_statistics`.replay_trade t
+        WHERE
+        t.create_time BETWEEN #{startTime} AND #{endTime}
+        AND t.flow_state <![CDATA[ <> ]]> 8
+        GROUP BY
+        DATE_FORMAT( t.create_time, '%Y-%m-%d' )
+    </select>
+
+    <select id="tradeSevenDayItemsStatistic" parameterType="com.wanmi.ares.replay.trade.model.request.ReplayTradeSevenDayRequest" resultType="com.wanmi.ares.replay.trade.model.response.ReplayTradeSevenDayResponse">
+        SELECT
+        DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+        IFNULL( sum( ti.num ), 0 ) totalNum
+        FROM
+        `s2b_statistics`.replay_trade t
+        LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+        WHERE
+        t.create_time BETWEEN #{startTime} AND #{endTime}
+        AND t.flow_state <![CDATA[ <> ]]> 8
+        GROUP BY
+        DATE_FORMAT( t.create_time, '%Y-%m-%d' )
+    </select>
+
+    <select id="tradeTwoDaySaleStatistic" resultType="com.wanmi.ares.replay.trade.model.response.ReplayTradeSevenDayResponse">
+        SELECT
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+            IFNULL( sum( t.total_price ), 0 ) totalPrice
+        FROM
+            `s2b_statistics`.replay_trade t
+        WHERE
+            TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+          AND t.flow_state <![CDATA[ <> ]]> 8
+          AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' )
+    </select>
+
+    <!--查询今昨日金额-->
+    <select id="queryTwoDaySalesAmountStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SalesAmountData">
+        SELECT
+            m.ware_id AS wareId,
+            max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.totalPrice ELSE 0 END ) AS todaySalesPrice,
+            max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.totalPrice ELSE 0 END ) AS yesterdaySalesPrice
+        FROM
+        (
+            SELECT
+                t.ware_id,
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                IFNULL( sum( t.total_price ), 0 ) totalPrice
+            FROM
+                `s2b_statistics`.replay_trade t
+            WHERE
+                TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+            GROUP BY
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                t.ware_id
+        ) m
+        GROUP BY
+            m.ware_id
+    </select>
+
+    <!--查询省份今昨日金额-->
+    <select id="queryTwoDaySalesAmountStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SalesAmountNewData">
+        SELECT tx.*,( tx.todaySalesPrice + tx.yesterdaySalesPrice ) AS towDayTotalSalesPrice
+        FROM
+        (
+            SELECT
+                m.province_id AS provinceId,
+                rp.`name` AS provinceName,
+                max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.totalPrice ELSE 0 END ) AS todaySalesPrice,
+                max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.totalPrice ELSE 0 END ) AS yesterdaySalesPrice
+            FROM
+            (
+                SELECT
+                t1.province_id,
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                IFNULL( sum( t.total_price ), 0 ) totalPrice
+                FROM
+                `s2b_statistics`.replay_trade t
+                LEFT JOIN `s2b_statistics`.replay_consignee t1 ON t.tid = t1.tid
+                WHERE
+                TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+                GROUP BY
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                t1.province_id
+            ) m
+                LEFT JOIN `s2b_statistics`.region_copy rp ON m.province_id = rp.`code`
+                GROUP BY
+                province_id
+        ) tx
+        ORDER BY
+        towDayTotalSalesPrice DESC
+    </select>
+
+    <!--查询今昨日箱数-->
+    <select id="queryTwoDaySalesCaseStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SalesCaseData">
+        SELECT
+            m.ware_id AS wareId,
+            max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.totalNum ELSE 0 END ) AS todaySalesCase,
+            max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.totalNum ELSE 0 END ) AS yesterdaySalesCase
+        FROM
+        (
+            SELECT
+                t.ware_id,
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                IFNULL( sum( ti.num ), 0 ) totalNum
+            FROM
+                `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+            WHERE
+                TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+            GROUP BY
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                t.ware_id
+        ) m
+        GROUP BY
+            m.ware_id
+    </select>
+
+    <!--查询省份今昨日箱数-->
+    <select id="queryTwoDaySalesCaseStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SalesCaseNewData">
+        SELECT
+            tx.*,
+            ( todaySalesCase + yesterdaySalesCase ) AS towDaySalesCase
+        FROM
+            (
+            SELECT
+                m.province_id AS provinceId,
+                rc.`name` AS provinceName,
+                max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.totalNum ELSE 0 END ) AS todaySalesCase,
+                max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.totalNum ELSE 0 END ) AS yesterdaySalesCase
+            FROM
+            (
+                SELECT
+                    c.province_id,
+                    DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                    IFNULL( sum( ti.num ), 0 ) totalNum
+                FROM
+                    `s2b_statistics`.replay_trade t
+                    LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+                    LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+                WHERE
+                    TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                    AND t.flow_state <![CDATA[ <> ]]> 8
+                    AND t.pay_state <![CDATA[ <> ]]> 0
+                GROUP BY
+                    DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                    c.province_id
+            ) m
+                LEFT JOIN `s2b_statistics`.region_copy rc ON m.province_id = rc.`code`
+            GROUP BY
+                m.province_id
+            ) tx
+        ORDER BY
+        towDaySalesCase DESC
+    </select>
+
+    <!--查询今昨日订单数-->
+    <select id="queryTwoDaySalesOrderStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SalesOrderData">
+        SELECT
+            m.ware_id AS wareId,
+            max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.orderCount ELSE 0 END ) AS todayOrderCount,
+            max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.orderCount ELSE 0 END ) AS yesterdayOrderCount
+        FROM
+        (
+            SELECT
+                t.ware_id,
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                IFNULL( count(*), 0 ) orderCount
+            FROM
+                `s2b_statistics`.replay_trade t
+            WHERE
+                TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+            GROUP BY
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                t.ware_id
+        ) m
+        GROUP BY
+            m.ware_id
+    </select>
+
+    <!--查询省份今昨日订单数-->
+    <select id="queryTwoDaySalesOrderStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SalesOrderNewData">
+        SELECT
+            tx.*,( todayOrderCount + yesterdayOrderCount ) AS towDayOrderCount
+        FROM
+            (
+            SELECT
+                m.province_id AS provinceId,
+                rc.`name` AS provinceName,
+                max( CASE m.dayTime WHEN DATE_FORMAT( NOW(), '%Y-%m-%d' ) THEN m.orderCount ELSE 0 END ) AS todayOrderCount,
+                max( CASE m.dayTime WHEN DATE_SUB( CURDATE(), INTERVAL 1 DAY ) THEN m.orderCount ELSE 0 END ) AS yesterdayOrderCount
+            FROM
+            (
+                SELECT
+                    c.province_id,
+                    DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+                    IFNULL( count(*), 0 ) orderCount
+                FROM
+                    `s2b_statistics`.replay_trade t
+                LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+                WHERE
+                    TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ <= ]]> 1
+                    AND t.flow_state <![CDATA[ <> ]]> 8
+                    AND t.pay_state <![CDATA[ <> ]]> 0
+                    GROUP BY
+                    DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+                    c.province_id
+                ) m
+                    LEFT JOIN `s2b_statistics`.region_copy rc ON m.province_id = rc.`code`
+                    GROUP BY
+                    m.province_id
+            ) tx
+        ORDER BY
+            towDayOrderCount DESC
+    </select>
+
+    <!--查询今日下单用户数-->
+    <select id="queryTodayDaySalesUserStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SalesUserData">
+        SELECT
+            s.ware_id as wareId,
+            SUM( 1 ) userCount
+        FROM
+        (
+            SELECT
+                t.ware_id,
+                DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime
+            FROM
+                `s2b_statistics`.replay_trade t
+            WHERE
+                TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ < ]]> 1
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+            GROUP BY
+                t.customer_id
+        ) s
+        GROUP BY
+            s.dayTime,
+            s.ware_id
+    </select>
+
+    <!--查询省份今日下单用户数-->
+    <select id="queryTodayDaySalesUserStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SalesUserNewData">
+        SELECT
+            s.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            SUM( 1 ) userCount
+        FROM
+            (
+                SELECT
+                    c.province_id,
+                    DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime
+                FROM
+                    `s2b_statistics`.replay_trade t
+                    LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+                WHERE
+                    TO_DAYS( NOW( ) ) - TO_DAYS( t.create_time ) <![CDATA[ < ]]> 1
+                    AND t.flow_state <![CDATA[ <> ]]> 8
+                    AND t.pay_state <![CDATA[ <> ]]> 0
+                GROUP BY
+                    t.customer_id
+            ) s
+            LEFT JOIN `s2b_statistics`.region_copy rc ON s.province_id = rc.`code`
+        GROUP BY
+            s.dayTime,
+            s.province_id
+        ORDER BY
+            userCount DESC
+    </select>
+
+    <!-- 查询近七日销售箱数 -->
+    <select id="querySevenDayCaseStatistic" resultType="com.wanmi.ares.replay.trade.model.response.RecentSevenDaySale">
+        SELECT
+            t.ware_id as wareId,
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+            IFNULL( sum( ti.num ), 0 ) totalNum
+        FROM
+            `s2b_statistics`.replay_trade t
+        LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+        WHERE
+            DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ <= ]]> date(t.create_time)
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+            t.ware_id
+    </select>
+
+    <!-- 查询省份近七日销售箱数 -->
+    <select id="querySevenDayCaseStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.RecentSevenDaySaleNew">
+        SELECT
+            c.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+            IFNULL( sum( ti.num ), 0 ) totalNum
+        FROM
+            `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+            LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            LEFT JOIN `s2b_statistics`.region_copy rc ON c.province_id = rc.`code`
+        WHERE
+            DATE_SUB( CURDATE(), INTERVAL 7 DAY )  <![CDATA[ <= ]]>  date( t.create_time )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+            c.province_id
+        ORDER BY dayTime DESC,totalNum DESC
+    </select>
+
+    <!-- 查询近七日销售额 -->
+    <select id="querySevenDayPriceStatistic" resultType="com.wanmi.ares.replay.trade.model.response.RecentSevenDaySalePirce">
+        SELECT
+            t.ware_id as wareId,
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+            IFNULL( sum( t.total_price ), 0 ) daySalePrice
+        FROM
+            `s2b_statistics`.replay_trade t
+        WHERE
+            DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ <= ]]> date(t.create_time)
+          AND t.flow_state <![CDATA[ <> ]]> 8
+          AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+            t.ware_id
+    </select>
+
+    <!-- 查询省份近七日销售额 -->
+    <select id="querySevenDayPriceStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.RecentSevenDaySalePirceNew">
+        SELECT
+            c.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ) dayTime,
+            IFNULL( sum( t.total_price ), 0 ) daySalePrice
+        FROM
+            `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            LEFT JOIN `s2b_statistics`.region_copy rc ON c.province_id = rc.`code`
+        WHERE
+            DATE_SUB( CURDATE(), INTERVAL 7 DAY ) <![CDATA[ <= ]]> date( t.create_time )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            DATE_FORMAT( t.create_time, '%Y-%m-%d' ),
+            c.province_id
+        ORDER BY
+            dayTime DESC,
+            daySalePrice DESC
+    </select>
+
+    <!--查询本月销售箱数 -->
+    <select id="queryCurrentMonthCaseStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisData">
+        SELECT
+            t.ware_id as wareId,
+            IFNULL( sum( ti.num ), 0 ) orderItemNum
+        FROM
+            `s2b_statistics`.replay_trade t
+        LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            t.ware_id
+    </select>
+
+    <!--查询省份本月销售箱数 -->
+    <select id="queryCurrentMonthCaseStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisNewData">
+        SELECT
+            c.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            IFNULL( sum( ti.num ), 0 ) orderItemNum
+        FROM
+            `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_trade_item ti ON t.tid = ti.tid
+            LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            LEFT JOIN `s2b_statistics`.region_copy rc ON c.province_id = rc.`code`
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ), '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            c.province_id
+        ORDER BY
+            orderItemNum DESC
+    </select>
+
+    <!--查询本月销售金额 -->
+    <select id="queryCurrentMonthAmountStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisData">
+        SELECT
+            t.ware_id as wareId,
+            IFNULL( sum( t.total_price ), 0 ) salePrice
+        FROM
+            `s2b_statistics`.replay_trade t
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            t.ware_id
+    </select>
+
+    <select id="queryCurrentMonthAmountStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisNewData">
+        SELECT
+            c.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            IFNULL( sum( t.total_price ), 0 ) salePrice
+        FROM
+            `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            LEFT JOIN `s2b_statistics`.region_copy rc ON c.province_id = rc.`code`
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE(), '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            c.province_id
+        ORDER BY
+        salePrice DESC
+    </select>
+
+    <!--查询本月订单数 -->
+    <select id="queryCurrentMonthOrderStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisData">
+        SELECT
+            t.ware_id as wareId,
+            IFNULL( count(*), 0 ) orderNum
+        FROM
+            `s2b_statistics`.replay_trade t
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            t.ware_id
+    </select>
+
+    <!--查询省份本月订单数 -->
+    <select id="queryCurrentMonthOrderStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisNewData">
+        SELECT
+            c.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            IFNULL( count(*), 0 ) orderNum
+        FROM
+            `s2b_statistics`.replay_trade t
+            LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            LEFT JOIN `s2b_statistics`.region_copy rc ON c.province_id = rc.`code`
+        WHERE
+            DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ), '%Y%m' )
+            AND t.flow_state <![CDATA[ <> ]]> 8
+            AND t.pay_state <![CDATA[ <> ]]> 0
+        GROUP BY
+            c.province_id
+        ORDER BY
+            orderNum DESC
+    </select>
+
+    <!--查询本月下单用户 -->
+    <select id="queryCurrentMonthUserStatistic" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisData">
+        SELECT
+            s.ware_id as wareId,
+            SUM( 1 ) userNum
+        FROM
+        (
+            SELECT
+                t.ware_id,
+                t.customer_id
+            FROM
+                `s2b_statistics`.replay_trade t
+            WHERE
+                DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+            GROUP BY
+                t.customer_id
+        ) s
+        GROUP BY
+            s.ware_id
+    </select>
+
+    <!--查询省份本月下单用户 -->
+    <select id="queryCurrentMonthUserStatisticNew" resultType="com.wanmi.ares.replay.trade.model.response.SaleSynthesisNewData">
+        SELECT
+            s.province_id AS provinceId,
+            rc.`name` AS provinceName,
+            SUM( 1 ) userNum
+        FROM
+        (
+            SELECT
+                c.province_id,
+                t.customer_id
+            FROM
+                `s2b_statistics`.replay_trade t
+                LEFT JOIN `s2b_statistics`.replay_consignee c ON t.tid = c.tid
+            WHERE
+                DATE_FORMAT( t.create_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ), '%Y%m' )
+                AND t.flow_state <![CDATA[ <> ]]> 8
+                AND t.pay_state <![CDATA[ <> ]]> 0
+                GROUP BY
+                c.province_id,t.customer_id
+        ) s
+            LEFT JOIN `s2b_statistics`.region_copy rc ON s.province_id = rc.`code`
+        GROUP BY
+            s.province_id
+        ORDER BY
+            userNum DESC
+    </select>
+
+    <resultMap id="CustomerTradItemMap" type="com.wanmi.ares.response.datecenter.CustomerTradeItemResponse">
+        <result column="tid" property="tid"></result>
+        <result column="total_price" property="totalPrice"/>
+        <result column="create_time" property="orderTime"></result>
+        <result column="num" property="buyNum"/>
+    </resultMap>
+
+    <select id="queryCustomerTradeItem"
+            resultMap="CustomerTradItemMap">
+        select t.tid as tid,
+        t.total_price as total_price,
+        date_format(t.create_time, '%Y-%m-%d %H:%i:%S') as create_time,
+        ifnull(sum(r.num), 0)                           as num
+        from replay_trade t
+        inner join replay_trade_item r on t.tid = r.tid
+        where t.customer_id =  #{customerId}
+        AND t.flow_state <![CDATA[ <> ]]> 8
+        AND t.pay_state <![CDATA[ <> ]]> 0
+        and date_format(t.create_time, '%Y-%m') = #{date}
+        group by t.tid order by create_time desc
+    </select>
+
+    <resultMap id="CustomerTradMap" type="com.wanmi.ares.response.datecenter.CustomerTradeResponse">
+        <result column="total_price" property="totalPrice"/>
+        <result column="customer_id" property="customerId"></result>
+        <result column="buy_num" property="buyNum"/>
+        <result column="trade_num" property="tradeNum"/>
+    </resultMap>
+
+    <select id="queryCustomerTradeDetail" resultMap="CustomerTradMap">
+        select
+            t.customer_id as customer_id,
+            count(*) as trade_num,
+            t.total_price as total_price,
+                ifnull(sum(i.num),0) as buy_num
+        from replay_trade t
+                 inner join replay_trade_item i on t.tid = i.tid
+        where date_format(t.create_time, '%Y-%m') = #{customerTrade.date}
+        AND t.flow_state <![CDATA[ <> ]]> 8
+        AND t.pay_state <![CDATA[ <> ]]> 0
+        <if test="customerTrade.customerIds != null and customerTrade.customerIds.size() > 0">
+            and customer_id in
+            <foreach collection="customerTrade.customerIds" separator="," item="id" open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+        group by t.customer_id,t.tid order by buy_num desc
+    </select>
+
+    <resultMap id="TradeStatisticResponseMap" type="com.wanmi.ares.response.datecenter.TradeStatisticResponse">
+        <result column="customer_id" property="customerId"/>
+        <result column="tid" property="tid"/>
+        <result column="total_price" property="tradePrice"/>
+        <result column="num" property="num"/>
+    </resultMap>
+    <!--查询订单数、订单金额-->
+    <select id="queryTradeByDataForBoss" resultMap="TradeStatisticResponseMap">
+        select t.tid       as tid,
+        t.total_price       as total_price,
+        t.customer_id as customer_id,
+        ifnull(sum(r.num), 0)   as num
+        from replay_trade t
+        inner join replay_trade_item r on t.tid = r.tid
+        where  t.flow_state <![CDATA[ <> ]]> 8
+        AND t.pay_state <![CDATA[ <> ]]> 0
+        and date_format(t.create_time, '%Y-%m') = #{date}
+            <if test="customerIds != null  and customerIds.size() > 0 ">
+                and customer_id in
+                <foreach collection="customerIds" separator="," item="id" open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        group by t.customer_id,t.tid
+    </select>
+
+    <select id="queryTowDayStoreSalePriceView" resultType="com.wanmi.ares.view.replay.TowDayStoreSalePriceView">
+        SELECT m.company_id                                                              AS companyId,
+               st.store_name                                                             AS storeName,
+               max(IF(m.dayTime = DATE_FORMAT(NOW(), '%Y-%m-%d'), m.totalPrice, 0))      AS todaySalesPrice,
+               max(IF(m.dayTime = DATE_SUB(CURDATE(), INTERVAL 1 DAY), m.totalPrice, 0)) AS yesterdaySalesPrice,
+               SUM(m.totalPrice)                                                         AS towDaySalesPrice
+        FROM (SELECT t.company_id,
+                     DATE_FORMAT(t.pay_time, '%Y-%m-%d') dayTime,
+                     IFNULL(SUM(t.total_price), 0)       totalPrice
+              FROM `s2b_statistics`.replay_trade t
+              WHERE TO_DAYS(NOW()) - TO_DAYS(t.pay_time) &lt;= 1
+                AND t.flow_state != 8
+                AND t.pay_state != 0
+              GROUP BY t.company_id,
+                       DATE_FORMAT(t.pay_time, '%Y-%m-%d')) m
+                 LEFT JOIN `sbc-customer`.`store` st ON m.company_id = st.company_info_id
+        GROUP BY m.company_id
+        ORDER BY towDaySalesPrice DESC
+    </select>
+
+    <select id="queryTodayProvinceSalePriceView" resultType="com.wanmi.ares.view.replay.TodayProvinceSalePriceView">
+        SELECT t1.province_id                provinceId,
+               rp.`name` AS                  provinceName,
+               IFNULL(SUM(t.total_price), 0) salePrice,
+               COUNT(DISTINCT t.customer_id) orderUser
+        FROM `s2b_statistics`.replay_trade t
+                 LEFT JOIN `s2b_statistics`.replay_consignee t1 ON t.tid = t1.tid
+                 LEFT JOIN `s2b_statistics`.region_copy rp ON t1.province_id = rp.`code`
+        WHERE TO_DAYS(t.pay_time) = TO_DAYS(NOW())
+          AND t.flow_state != 8
+          AND t.pay_state != 0
+        GROUP BY t1.province_id
+        ORDER BY salePrice DESC
+    </select>
+
+    <select id="querySevenDaySalePriceView" resultType="com.wanmi.ares.view.replay.SevenDaySalePriceView">
+        SELECT DATE_FORMAT(t.pay_time, '%m.%d') AS dayTime,
+               IFNULL(SUM(t.total_price), 0)    AS salePrice
+        FROM `s2b_statistics`.replay_trade t
+        WHERE DATE_SUB(CURDATE(), INTERVAL 6 DAY) &lt;= DATE(t.pay_time)
+          AND t.flow_state != 8
+          AND t.pay_state != 0
+        GROUP BY DATE_FORMAT(t.pay_time, '%Y-%m-%d')
+        ORDER BY dayTime DESC,
+                 salePrice DESC
+    </select>
+
+
+    <select id="staticsCompanyPayFeeByStartTime" resultType="com.wanmi.ares.view.replay.ReplayTradeBuyerStoreResponse">
+        select company_id as companyId, IFNULL(sum(total_pay_cash), 0) as fee
+        from s2b_statistics.replay_trade
+        where create_time > #{startTime}
+          and pay_state = 2
+        group by company_id;
+    </select>
+
+
+    <select id="staticsCustomerCompanyPayFeeByStartTime"
+            resultType="com.wanmi.ares.view.replay.ReplayTradeBuyerStoreResponse">
+        select customer_id as customerId, company_id as companyId, IFNULL(sum(total_pay_cash), 0) as fee
+        from s2b_statistics.replay_trade
+        where create_time > #{startTime}
+          and pay_state = 2
+        group by customer_id, company_id;
+    </select>
+
+</mapper>

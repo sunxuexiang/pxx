@@ -1,0 +1,43 @@
+server:
+  port: 10010
+
+replica:
+  mongo:
+    uri: 172.26.124.124:27017
+    db: local
+    collection: oplog.rs
+    versiong: 3
+    userName:
+    password:
+    authenticationDatabase:
+tunnel:
+  type: kafka
+  partition: 0
+
+capture:
+  client:
+    regex-filter: s2b.trade,s2b.returnOrder
+   # dynamic-topic: s2b.trade:s2b_trade,s2b.returnOrder:s2b_returnOrder
+    cluster-name: default
+    zookeeper-host: 111.23.139.237:2181
+    flush-period: 1000
+    meta-mode: ZOOKEEPER
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com:
+      wanmi: debug
+
+spring:
+  kafka:
+    bootstrap-servers: 111.23.139.237:9092
+    producer:
+      retries: 0
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        linger.ms: 1
+

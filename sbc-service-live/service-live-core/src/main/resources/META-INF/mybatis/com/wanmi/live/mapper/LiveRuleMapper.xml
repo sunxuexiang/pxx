@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanmi.sbc.live.rule.dao.LiveRuleMapper">
+  <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.rule.model.root.LiveRule">
+    <id column="id" property="id" />
+    <result column="live_room_id" property="liveRoomId" />
+    <result column="type" property="type" />
+    <result column="begin_num" property="beginNum" />
+    <result column="coefficient" property="coefficient" />
+    <result column="fixed" property="fixed" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id,live_room_id, type, begin_num,coefficient,fixed, create_time,update_time
+  </sql>
+
+  <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_rule
+    where type=#{type} and live_room_id=#{liveRoomId}  limit 1
+  </select>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wanmi.sbc.live.rule.model.root.LiveRule" useGeneratedKeys="true">
+    insert into live_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="liveRoomId != null">
+        live_room_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="beginNum != null">
+        begin_num,
+      </if>
+      <if test="coefficient != null">
+        coefficient,
+      </if>
+      <if test="fixed != null">
+        fixed,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="liveRoomId != null">
+        #{liveRoomId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIGINT},
+      </if>
+      <if test="beginNum != null">
+        #{beginNum,jdbcType=BIGINT},
+      </if>
+      <if test="coefficient != null">
+        #{coefficient,jdbcType=VARCHAR},
+      </if>
+      <if test="fixed != null">
+        #{fixed,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateSelective" parameterType="com.wanmi.sbc.live.rule.model.root.LiveRule">
+    update live_rule
+    <set>
+      <if test="beginNum != null">
+        begin_num = #{beginNum,jdbcType=BIGINT},
+      </if>
+      <if test="coefficient != null">
+        coefficient = #{coefficient,jdbcType=VARCHAR},
+      </if>
+      <if test="fixed != null">
+        fixed = #{fixed,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where type = #{type,jdbcType=BIGINT} and live_room_id = #{liveRoomId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.logisticscore.dao.WmsOrderStatusMapper">
+
+    <resultMap id="WmsOrderStatusMap" type="com.wanmi.sbc.logisticscore.entity.WmsOrderStatus">
+        <result property="tid" column="soreference1"/>
+        <result property="payStatus" column="releasestatus"/>
+        <result property="orderStatus" column="sostatus"/>
+    </resultMap>
+
+
+    <select id="findWmsOrderStatusByTid" resultMap="WmsOrderStatusMap">
+        select r.soreference1,
+               r.releasestatus,
+               sostatus
+        from doc_order_header r
+        where to_char(r.addtime, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+          and r.soreference1 = #{tid}
+    </select>
+
+    <select id="findAllWmsOrderStatusByTidList" resultMap="WmsOrderStatusMap">
+        select r.soreference1,r.releasestatus,
+        sostatus
+        from doc_order_header r
+        <if test="tidList != null and tidList.size > 0">
+            <where>
+                r.soreference1 in
+                <foreach collection="tidList" item="tid" open="(" close=")" separator=",">
+                    #{tid}
+                </foreach>
+            </where>
+        </if>
+    </select>
+</mapper>

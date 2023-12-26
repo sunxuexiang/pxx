@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="b2b-platform">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-manager-base/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-manager-s2b-boss/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-manager-s2b-provider/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-manager-s2b-supplier/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-manager-store-base/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-web-2b-mobile/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-web-2b-pc/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-web-base/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-wms-site/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bff-wms-site/src/test/java"/>
+        <property name="context-root" value="b2b-platform"/>
+        <property name="java-output-path" value="/b2b-platform/bin"/>
+    </wb-module>
+</project-modules>

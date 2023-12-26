@@ -1,0 +1,14 @@
+[
+  {"productPrice":149,"cateId":1428,"cateName":"粮油调料","percent": 9.03},
+  {"productPrice":133,"cateId":1428,"cateName":"日化百货","percent": 8.68},
+  {"productPrice":166,"cateId":1428,"cateName":"坚果炒货","percent": 8.54},
+  {"productPrice":152,"cateId":1428,"cateName":"麻辣熟食","percent": 7.12},
+  {"productPrice":68,"cateId":1428,"cateName":"烘焙膨化","percent": 7.85},
+  {"productPrice":97,"cateId":1428,"cateName":"冲调乳饮","percent": 7.35},
+  {"productPrice":152,"cateId":1428,"cateName":"南北干货","percent": 7.25},
+  {"productPrice":110,"cateId":1428,"cateName":"酒水饮料","percent": 7.18},
+  {"productPrice":131,"cateId":1428,"cateName":"果干蜜饯","percent": 6.57},
+  {"productPrice":111,"cateId":1428,"cateName":"进口食品类","percent": 6.25},
+  {"productPrice":148,"cateId":1428,"cateName":"糖果巧克力","percent": 5.90},
+  {"productPrice":70,"cateId":1428,"cateName":"果冻布丁","percent": 5.40}
+]

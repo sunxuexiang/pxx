@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>service-customer-api</module>
+        <module>service-customer-core</module>
+        <module>service-customer-app</module>
+        <module>service-customer-bean</module>
+    </modules>
+
+    <parent>
+        <groupId>com.wanmi</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.1.11-RELEASE</version>
+    </parent>
+
+    <groupId>com.wanmi.sbc</groupId>
+    <artifactId>service-customer</artifactId>
+    <version>xyy-4.0.9-SNAPSHOT</version>
+
+    <properties>
+        <wm.micro.service.version>xyy-4.0.9-SNAPSHOT</wm.micro.service.version>
+        <micro-service-autoconfigure.version>4.0.9-SNAPSHOT</micro-service-autoconfigure.version>
+        <!--<sharding-jdbc-spring-boot-starter.version>4.0.0-RC1</sharding-jdbc-spring-boot-starter.version> -->
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+<!--                    <username>${git.username}</username>-->
+<!--                    <password>${git.password}</password>-->
+                    <tagNameFormat>service-customer-v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <connection>scm:git:http://172.19.25.151/sbc-micro-service/sbc-service-customer.git</connection>
+        <developerConnection>scm:git:http://172.19.25.151/sbc-micro-service/sbc-service-customer.git</developerConnection>
+        <url>http://172.19.25.151/sbc-micro-service/sbc-service-customer.git</url>
+      <tag>service-customer-v4.0.9-RELEASE</tag>
+  </scm>
+    <repositories>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.host.dao.LiveHostMapper">
+
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.host.model.root.LiveHost">
+    	<result column="host_id" jdbcType="INTEGER" property="hostId"/>
+    	<result column="host_name" jdbcType="VARCHAR" property="hostName"/>
+    	<result column="contact_phone" jdbcType="VARCHAR" property="contactPhone"/>
+    	<result column="host_type" jdbcType="BIGINT" property="hostType"/>
+    	<result column="working_state" jdbcType="BIGINT" property="workingState"/>
+    	<result column="customer_id" jdbcType="VARCHAR" property="customerId"/>
+    	<result column="customer_account" jdbcType="VARCHAR" property="customerAccount"/>
+    	<result column="account_name" jdbcType="VARCHAR" property="accountName"/>
+    	<result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+    	<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    	<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    	<result column="del_flag" jdbcType="BIGINT" property="delFlag"/>
+    </resultMap>
+
+    <resultMap id="AccountMap" type="com.wanmi.sbc.live.hostAccount.model.root.LiveHostAccount">
+        <result column="host_id" jdbcType="BIGINT" property="hostId"/>
+        <result column="customer_id" jdbcType="VARCHAR" property="customerId"/>
+        <result column="customer_account" jdbcType="VARCHAR" property="customerAccount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
+        <result column="data_sn" jdbcType="VARCHAR" property="dataSn"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        host_id,host_name,contact_phone,host_type,working_state,customer_id,customer_account,account_name,employee_id,create_time,update_time,del_flag
+    </sql>
+
+    <!-- 分页查询 Automatic Generator By 王冬明（1010331559@qq.com） -->
+    <select id="getPage" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM live_host
+        where del_flag=0
+        <if test="para.hostName != null and para.hostName != ''">
+            and `host_name` = #{para.hostName}
+        </if>
+        <if test="para.contactPhone != null and para.contactPhone != ''">
+            and `contact_phone` = #{para.contactPhone}
+        </if>
+        <if test="para.workingState != null">
+            and `working_state` = #{para.workingState}
+        </if>
+        <if test="para.customerAccount != null and para.customerAccount != ''">
+            and `customer_account` like concat('%',#{para.customerAccount,jdbcType=VARCHAR},'%')
+        </if>
+        order by host_id desc
+        LIMIT #{para.pageNum,jdbcType=INTEGER},#{para.pageSize,jdbcType=INTEGER}
+    </select>
+
+    <!-- 分页数量查询 Automatic Generator By 王冬明（1010331559@qq.com）-->
+    <select id="getPageCount" resultType="int" parameterType="map">
+        select count(1) FROM live_host
+        where del_flag=0
+        <if test="para.hostName != null and para.hostName != ''">
+            and `host_name` = #{para.hostName}
+        </if>
+        <if test="para.contactPhone != null and para.contactPhone != ''">
+            and `contact_phone` = #{para.contactPhone}
+        </if>
+        <if test="para.workingState != null">
+            and `working_state` = #{para.workingState}
+        </if>
+        <if test="para.customerAccount != null and para.customerAccount != ''">
+            and `customer_account` like concat('%',#{para.customerAccount,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
+    <select id="getInfo" parameterType="int" resultMap="BaseResultMap">
+        select * from live_host where host_id = #{hostId} and del_flag=0
+    </select>
+
+    <select id="getAccountList" parameterType="int" resultMap="AccountMap">
+        select * from live_host_account where host_id = #{hostId}
+    </select>
+
+    <!-- 新增 Automatic Generator By 王冬明（1010331559@qq.com） -->
+    <insert id="add" parameterType="com.wanmi.sbc.live.host.model.root.LiveHost" useGeneratedKeys="true" keyProperty="hostId"  keyColumn="host_id">
+        insert into live_host
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hostName != null">host_name,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="hostType != null">host_type,</if>
+            <if test="workingState != null">working_state,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="customerAccount != null">customer_account,</if>
+            <if test="accountName != null">account_name,</if>
+            <if test="employeeId != null">employee_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hostName != null">#{hostName,jdbcType=VARCHAR},</if>
+            <if test="contactPhone != null">#{contactPhone,jdbcType=VARCHAR},</if>
+            <if test="hostType != null">#{hostType,jdbcType=BIGINT},</if>
+            <if test="workingState != null">#{workingState,jdbcType=BIGINT},</if>
+            <if test="customerId != null">#{customerId,jdbcType=VARCHAR},</if>
+            <if test="customerAccount != null">#{customerAccount,jdbcType=VARCHAR},</if>
+            <if test="accountName != null">#{accountName,jdbcType=VARCHAR},</if>
+            <if test="employeeId != null">#{employeeId,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="delFlag != null">#{delFlag,jdbcType=BIGINT},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改 Automatic Generator By 王冬明（1010331559@qq.com） -->
+    <update id="modify" parameterType="com.wanmi.sbc.live.host.model.root.LiveHost" useGeneratedKeys="true" keyProperty="hostId"  keyColumn="host_id">
+        update live_host
+        <set>
+                <if test="hostName != null">host_name=#{hostName,jdbcType=VARCHAR},</if>
+                <if test="contactPhone != null">contact_phone=#{contactPhone,jdbcType=VARCHAR},</if>
+                <if test="hostType != null">host_type=#{hostType,jdbcType=BIGINT},</if>
+                <if test="workingState != null">working_state=#{workingState,jdbcType=BIGINT},</if>
+                <if test="customerId != null">customer_id=#{customerId,jdbcType=VARCHAR},</if>
+                <if test="customerAccount != null">customer_account=#{customerAccount,jdbcType=VARCHAR},</if>
+                <if test="accountName != null">account_name=#{accountName,jdbcType=VARCHAR},</if>
+                <if test="employeeId != null">employee_id=#{employeeId,jdbcType=VARCHAR},</if>
+                <if test="updateTime != null">update_time=#{updateTime,jdbcType=TIMESTAMP},</if>
+                <if test="delFlag != null">del_flag=#{delFlag,jdbcType=BIGINT},</if>
+        </set>
+        where  host_id = #{hostId,jdbcType=INTEGER}
+    </update>
+</mapper>

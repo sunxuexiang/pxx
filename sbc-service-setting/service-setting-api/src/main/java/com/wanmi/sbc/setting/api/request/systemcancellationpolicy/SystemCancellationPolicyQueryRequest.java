@@ -1,0 +1,103 @@
+package com.wanmi.sbc.setting.api.request.systemcancellationpolicy;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wanmi.sbc.common.base.BaseQueryRequest;
+import com.wanmi.sbc.common.enums.DeleteFlag;
+import com.wanmi.sbc.common.util.CustomLocalDateTimeDeserializer;
+import com.wanmi.sbc.common.util.CustomLocalDateTimeSerializer;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * <p>隐私政策通用查询请求参数</p>
+ * @author yangzhen
+ * @date 2020-09-23 14:52:35
+ */
+@ApiModel
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SystemCancellationPolicyQueryRequest extends BaseQueryRequest {
+
+	private static final long serialVersionUID = 3363454489596922108L;
+
+	/**
+	 * 批量查询-隐私政策idList
+	 */
+	@ApiModelProperty(value = "批量查询-隐私政策idList")
+	private List<String> cancellationPolicyIdList;
+
+	/**
+	 * 隐私政策id
+	 */
+	@ApiModelProperty(value = "隐私政策id")
+	private String cancellationPolicyId;
+
+	/**
+	 * 隐私政策
+	 */
+	@ApiModelProperty(value = "隐私政策")
+	private String cancellationPolicy;
+
+	/**
+	 * 隐私政策弹窗
+	 */
+	@ApiModelProperty(value = "隐私政策弹窗")
+	private String cancellationPolicyPop;
+
+	/**
+	 * 创建人
+	 */
+	@ApiModelProperty(value = "创建人")
+	private String createPerson;
+
+	/**
+	 * 搜索条件:创建时间开始
+	 */
+	@ApiModelProperty(value = "搜索条件:创建时间开始")
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+	private LocalDateTime createTimeBegin;
+	/**
+	 * 搜索条件:创建时间截止
+	 */
+	@ApiModelProperty(value = "搜索条件:创建时间截止")
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+	private LocalDateTime createTimeEnd;
+
+	/**
+	 * 修改人
+	 */
+	@ApiModelProperty(value = "修改人")
+	private String updatePerson;
+
+	/**
+	 * 搜索条件:修改时间开始
+	 */
+	@ApiModelProperty(value = "搜索条件:修改时间开始")
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+	private LocalDateTime updateTimeBegin;
+	/**
+	 * 搜索条件:修改时间截止
+	 */
+	@ApiModelProperty(value = "搜索条件:修改时间截止")
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+	private LocalDateTime updateTimeEnd;
+
+	/**
+	 * 是否删除标志 0：否，1：是
+	 */
+	@ApiModelProperty(value = "是否删除标志 0：否，1：是")
+	private DeleteFlag delFlag;
+
+}

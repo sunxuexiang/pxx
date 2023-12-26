@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.hostAccount.dao.LiveHostAccountMapper">
+
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.hostAccount.model.root.LiveHostAccount">
+        <result column="host_account_id" jdbcType="INTEGER" property="hostAccountId"/>
+        <result column="host_id" jdbcType="INTEGER" property="hostId"/>
+    	<result column="customer_id" jdbcType="VARCHAR" property="customerId"/>
+    	<result column="customer_account" jdbcType="VARCHAR" property="customerAccount"/>
+    	<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    	<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    	<result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
+        <result column="data_sn" jdbcType="VARCHAR" property="dataSn"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        host_account_id,host_id,customer_id,customer_account,create_time,update_time,del_flag,data_sn
+    </sql>
+
+    <select id="getListByHostId" parameterType="int" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from live_host_account where host_id = #{hostId}
+    </select>
+
+    <select id="getEnableCountByHostId" parameterType="int" resultType="java.lang.Integer">
+        select count(1) from live_host_account  where host_id = #{hostId} and del_flag=0
+    </select>
+
+    <select id="getInfo" parameterType="map" resultMap="BaseResultMap">
+        select * from live_host_account  where del_flag=0
+        <if test="para.hostId != null"> and host_id=#{para.hostId} </if>
+        <if test="para.customerId != null  and para.customerId != ''"> and customer_id=#{para.customerId} </if>
+        <if test="para.customerAccount != null  and para.customerAccount != ''"> and customer_account=#{para.customerAccount} </if>
+        limit 1
+    </select>
+
+    <select id="getEnableCustomerAccountList" resultType="string">
+        select customer_id from live_host_account where del_flag=0
+    </select>
+
+    <!-- 新增 Automatic Generator By 王冬明（1010331559@qq.com） -->
+    <insert id="add" parameterType="com.wanmi.sbc.live.hostAccount.model.root.LiveHostAccount" useGeneratedKeys="true" keyColumn="host_account_id">
+        insert into live_host_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">host_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="customerAccount != null">customer_account,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="dataSn != null">data_sn,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">#{hostId,jdbcType=INTEGER},</if>
+            <if test="customerId != null">#{customerId,jdbcType=VARCHAR},</if>
+            <if test="customerAccount != null">#{customerAccount,jdbcType=VARCHAR},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="delFlag != null">#{delFlag,jdbcType=INTEGER},</if>
+            <if test="dataSn != null">#{dataSn,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改 Automatic Generator By 王冬明（1010331559@qq.com） -->
+    <update id="modify" parameterType="com.wanmi.sbc.live.hostAccount.model.root.LiveHostAccount" useGeneratedKeys="true" keyColumn="host_account_id">
+        update live_host_account
+        <set>
+            <if test="createTime != null">create_time=#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">update_time=#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="delFlag != null">del_flag=#{delFlag,jdbcType=INTEGER},</if>
+            <if test="dataSn != null">data_sn=#{dataSn,jdbcType=VARCHAR},</if>
+        </set>
+        where  host_account_id = #{hostAccountId,jdbcType=INTEGER}
+    </update>
+</mapper>

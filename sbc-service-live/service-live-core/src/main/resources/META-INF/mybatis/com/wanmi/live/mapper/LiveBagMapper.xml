@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.bag.dao.LiveBagMapper">
+
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.bag.model.root.LiveBag">
+    	<result column="live_bag_id" jdbcType="BIGINT" property="liveBagId"/>
+    	<result column="live_room_id" jdbcType="BIGINT" property="liveRoomId"/>
+    	<result column="bag_name" jdbcType="VARCHAR" property="bagName"/>
+    	<result column="provide_nums" jdbcType="BIGINT" property="provideNums"/>
+    	<result column="provide_status" jdbcType="BIGINT" property="provideStatus"/>
+    	<result column="winning_number" jdbcType="BIGINT" property="winningNumber"/>
+    	<result column="lottery_time" jdbcType="TIMESTAMP" property="lotteryTime"/>
+    	<result column="join_type" jdbcType="BIGINT" property="joinType"/>
+    	<result column="join_content" jdbcType="VARCHAR" property="joinContent"/>
+    	<result column="ticket_way" jdbcType="BIGINT" property="ticketWay"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+    	<result column="coupon_id" jdbcType="VARCHAR" property="couponId"/>
+    	<result column="create_person" jdbcType="BIGINT" property="createPerson"/>
+    	<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    	<result column="update_person" jdbcType="BIGINT" property="updatePerson"/>
+    	<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    	<result column="del_flag" jdbcType="BIGINT" property="delFlag"/>
+    </resultMap>
+
+    <resultMap id="BaseResultLogMap" type="com.wanmi.sbc.live.bean.vo.LiveBagVO">
+        <result column="live_bag_id" jdbcType="BIGINT" property="liveBagId"/>
+        <result column="live_room_id" jdbcType="BIGINT" property="liveRoomId"/>
+        <result column="bag_name" jdbcType="VARCHAR" property="bagName"/>
+        <result column="provide_nums" jdbcType="BIGINT" property="provideNums"/>
+        <result column="provide_status" jdbcType="BIGINT" property="provideStatus"/>
+        <result column="winning_number" jdbcType="BIGINT" property="winningNumber"/>
+        <result column="lottery_time" jdbcType="TIMESTAMP" property="lotteryTime"/>
+        <result column="join_type" jdbcType="BIGINT" property="joinType"/>
+        <result column="join_content" jdbcType="VARCHAR" property="joinContent"/>
+        <result column="ticket_way" jdbcType="BIGINT" property="ticketWay"/>
+        <result column="activity_id" jdbcType="VARCHAR" property="activityId"/>
+        <result column="coupon_id" jdbcType="VARCHAR" property="couponId"/>
+        <result column="create_person" jdbcType="BIGINT" property="createPerson"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_person" jdbcType="BIGINT" property="updatePerson"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="del_flag" jdbcType="BIGINT" property="delFlag"/>
+        <result column="customer_accounts" jdbcType="VARCHAR" property="customerAccounts"/>
+        <result column="ticket_time" jdbcType="TIMESTAMP" property="ticketTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    live_bag_id,live_room_id,bag_name,provide_nums,provide_status,winning_number,lottery_time,join_type,join_content,ticket_way,coupon_id,activity_id,create_person,create_time,update_person,update_time,del_flag
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="getPage" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM live_bag
+        <where>
+            <if test="para.liveBagId != null">
+                and live_bag_id = #{para.liveBagId,jdbcType=BIGINT}
+            </if>
+            <if test="para.liveRoomId != null">
+                and live_room_id = #{para.liveRoomId,jdbcType=BIGINT}
+            </if>
+            <if test="para.bagName != null and para.bagName != ''">
+                and bag_name = #{para.bagName,jdbcType=VARCHAR}
+            </if>
+            
+            <if test="para.provideNums != null ">
+                and provide_nums = #{para.provideNums ,jdbcType=BIGINT}
+            </if>
+            <if test="para.provideStatus != null ">
+                and provide_status = #{para.provideStatus ,jdbcType=BIGINT}
+            </if>
+            <if test="para.winningNumber != null">
+                and winning_number = #{para.winningNumber,jdbcType=BIGINT}
+            </if>
+            <if test="para.lotteryTime != null">
+                and lottery_time = #{para.lotteryTime,jdbcType=}
+            </if>
+            <if test="para.joinType != null">
+                and join_type = #{para.joinType,jdbcType=BIGINT}
+            </if>
+            <if test="para.joinContent != null and joinContent != ''">
+                and join_content = #{para.joinContent,jdbcType=VARCHAR}
+            </if>
+            <if test="para.ticketWay != null">
+                and ticket_way = #{para.ticketWay,jdbcType=BIGINT}
+            </if>
+            <if test="para.couponId != null and couponId != ''">
+                and coupon_id = #{para.couponId,jdbcType=VARCHAR}
+            </if>
+            <if test="para.createPerson != null">
+                and create_person = #{para.createPerson,jdbcType=BIGINT}
+            </if>
+            <if test="para.createTime != null">
+                and create_time = #{para.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="para.updatePerson != null">
+                and update_person = #{para.updatePerson,jdbcType=BIGINT}
+            </if>
+            <if test="para.updateTime != null">
+                and update_time = #{para.updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="para.delFlag != null">
+                and del_flag = #{para.delFlag,jdbcType=BIGINT}
+            </if>
+        </where>
+        order by live_bag_id desc
+        LIMIT #{para.pageNum,jdbcType=INTEGER},#{para.pageSize,jdbcType=INTEGER}
+    </select>
+
+    <!--zy start-->
+    <!-- 查询总数 -->
+    <select id="getPageCount"  resultType="int" parameterType="map">
+        SELECT
+        count(1)
+        FROM live_bag
+        <where>
+            <if test="para.liveBagId != null">
+                and live_bag_id = #{para.liveBagId,jdbcType=BIGINT}
+            </if>
+            <if test="para.liveRoomId != null">
+                and live_room_id = #{para.liveRoomId,jdbcType=BIGINT}
+            </if>
+            <if test="para.bagName != null and para.bagName != ''">
+                and bag_name = #{para.bagName,jdbcType=VARCHAR}
+            </if>
+            
+            <if test="para.provideNums != null ">
+                and provide_nums = #{para.provideNums,jdbcType=BIGINT}
+            </if>
+            <if test="para.provideStatus != null  ">
+                and provide_status = #{para.provideStatus,jdbcType=BIGINT}
+            </if>
+            <if test="para.winningNumber != null">
+                and winning_number = #{para.winningNumber,jdbcType=BIGINT}
+            </if>
+            <if test="para.lotteryTime != null">
+                and lottery_time = #{para.lotteryTime,jdbcType=}
+            </if>
+            <if test="para.joinType != null">
+                and join_type = #{para.joinType,jdbcType=BIGINT}
+            </if>
+            <if test="para.joinContent != null and joinContent != ''">
+                and join_content = #{para.joinContent,jdbcType=VARCHAR}
+            </if>
+            <if test="para.ticketWay != null">
+                and ticket_way = #{para.ticketWay,jdbcType=BIGINT}
+            </if>
+            <if test="para.couponId != null and couponId != ''">
+                and coupon_id = #{para.couponId,jdbcType=VARCHAR}
+            </if>
+            <if test="para.createPerson != null">
+                and create_person = #{para.createPerson,jdbcType=BIGINT}
+            </if>
+            <if test="para.createTime != null">
+                and create_time = #{para.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="para.updatePerson != null">
+                and update_person = #{para.updatePerson,jdbcType=BIGINT}
+            </if>
+            <if test="para.updateTime != null">
+                and update_time = #{para.updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="para.delFlag != null">
+                and del_flag = #{para.delFlag,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="getListBagByLiveId" parameterType="com.wanmi.sbc.live.api.request.bag.LiveBagListRequest" resultMap="BaseResultLogMap">
+     select b.*,bl.customer_accounts,bl.ticket_time
+      from live_bag b
+      LEFT JOIN live_bag_log bl
+      on b.live_bag_id=bl.bag_id
+      where
+        bl.live_id=#{liveId}
+        <if test="bagName != null and bagName != ''">
+            and b.bag_name = #{bagName,jdbcType=VARCHAR}
+        </if>
+        <if test="provideStatus != null and provideStatus != '' ">
+            and b.provide_status = #{provideStatus,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="getListBagByLiveRoomId" parameterType="java.lang.Integer" resultMap="BaseResultLogMap">
+        select
+        <include refid="Base_Column_List"/>
+        from live_bag b
+        where
+        b.live_room_id=#{liveRoomId}
+        and del_flag =0
+    </select>
+
+    <select id="getInfo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from live_bag
+        where live_bag_id = #{liveBagId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="add" keyColumn="live_bag_id" keyProperty="liveBagId" parameterType="map" useGeneratedKeys="true">
+        insert into live_bag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="liveRoomId != null">
+                live_room_id,
+            </if>
+            <if test="bagName != null">
+                bag_name,
+            </if>
+            <if test="provideNums != null">
+                provide_nums,
+            </if>
+            <if test="provideStatus != null">
+                provide_status,
+            </if>
+            <if test="winningNumber != null">
+                winning_number,
+            </if>
+            <if test="lotteryTime != null">
+                lottery_time,
+            </if>
+            <if test="joinType != null">
+                join_type,
+            </if>
+            <if test="joinContent != null">
+                join_content,
+            </if>
+            <if test="ticketWay != null">
+                ticket_way,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="couponId != null">
+                coupon_id,
+            </if>
+            <if test="createPerson != null">
+                create_person,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updatePerson != null">
+                update_person,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveRoomId != null">
+                #{liveRoomId,jdbcType=INTEGER},
+            </if>
+            <if test="bagName != null">
+                #{bagName,jdbcType=VARCHAR},
+            </if>
+            <if test="provideNums != null">
+                #{provideNums,jdbcType=VARCHAR},
+            </if>
+            <if test="provideStatus != null">
+                #{provideStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="winningNumber != null">
+                #{winningNumber,jdbcType=INTEGER},
+            </if>
+            <if test="lotteryTime != null">
+                #{lotteryTime,jdbcType=DOUBLE},
+            </if>
+            <if test="joinType != null">
+                #{joinType,jdbcType=INTEGER},
+            </if>
+            <if test="joinContent != null">
+                #{joinContent,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketWay != null">
+                #{ticketWay,jdbcType=INTEGER},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="couponId != null">
+                #{couponId,jdbcType=VARCHAR},
+            </if>
+            <if test="createPerson != null">
+                #{createPerson,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatePerson != null">
+                #{updatePerson,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="modify" parameterType="map">
+        update live_bag
+        <set>
+            <if test="liveRoomId != null">
+                live_room_id = #{liveRoomId,jdbcType=INTEGER},
+            </if>
+            <if test="bagName != null">
+                bag_name = #{bagName,jdbcType=VARCHAR},
+            </if>
+            <if test="provideNums != null">
+                provide_nums = #{provideNums,jdbcType=INTEGER},
+            </if>
+            <if test="provideStatus != null">
+                provide_status = #{provideStatus,jdbcType=INTEGER},
+            </if>
+            <if test="winningNumber != null">
+                winning_number = #{winningNumber,jdbcType=INTEGER},
+            </if>
+            <if test="lotteryTime != null">
+                lottery_time = #{lotteryTime,jdbcType=DOUBLE},
+            </if>
+            <if test="joinType != null">
+                join_type = #{joinType,jdbcType=INTEGER},
+            </if>
+            <if test="joinContent != null">
+                join_content = #{joinContent,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketWay != null">
+                ticket_way = #{ticketWay,jdbcType=INTEGER},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="couponId != null">
+                coupon_id = #{couponId,jdbcType=VARCHAR},
+            </if>
+            <if test="createPerson != null">
+                create_person = #{createPerson,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatePerson != null">
+                update_person = #{updatePerson,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where live_bag_id = #{liveBagId,jdbcType=INTEGER}
+    </update>
+    <!--zy end-->
+</mapper>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/sbc-service-setting/service-setting-bean/src/main/java/com/wanmi/sbc/setting/bean/vo/MenuInfoVO.java" />
+    </excludeFromCompile>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="service-marketing-app" />
+        <module name="perseus-core" />
+        <module name="bff-wms-site" />
+        <module name="service-order-core" />
+        <module name="service-goods-core" />
+        <module name="service-wms-core" />
+        <module name="service-wms-bean" />
+        <module name="sbc-osd" />
+        <module name="service-wms-api" />
+        <module name="logistics-app" />
+        <module name="service-wms-app" />
+        <module name="service-goods-bean" />
+        <module name="logistics-api" />
+        <module name="bff-manager-s2b-provider" />
+        <module name="service-live-app" />
+        <module name="bff-manager-base" />
+        <module name="bff-manager-store-base" />
+        <module name="service-live-api" />
+        <module name="bff-web-2b-mobile" />
+        <module name="service-marketing-bean" />
+        <module name="service-message-api" />
+        <module name="bff-manager-s2b-supplier" />
+        <module name="service-shopcart-app" />
+        <module name="bff-web-2b-pc" />
+        <module name="bff-manager-s2b-boss" />
+        <module name="service-customer-app" />
+        <module name="bff-callback" />
+        <module name="service-order-bean" />
+        <module name="bff-web-base" />
+        <module name="service-message-bean" />
+        <module name="service-marketing-api" />
+        <module name="service-customer-api" />
+        <module name="mongo-capture" />
+        <module name="service-pay-bean" />
+        <module name="service-setting-app" />
+        <module name="service-account-bean" />
+        <module name="service-wallet-core" />
+        <module name="service-message-core" />
+        <module name="service-setting-api" />
+        <module name="service-pay-api" />
+        <module name="service-wallet-api" />
+        <module name="service-shopcart-api" />
+        <module name="service-pay-core" />
+        <module name="service-setting-bean" />
+        <module name="service-returnOrder-core" />
+        <module name="service-message-app" />
+        <module name="service-returnOrder-app" />
+        <module name="service-shopcart-core" />
+        <module name="service-advertising-app" />
+        <module name="service-customer-core" />
+        <module name="service-account-api" />
+        <module name="service-returnOrder-api" />
+        <module name="logistics-bean" />
+        <module name="service-marketing-core" />
+        <module name="beluga-tms-api" />
+        <module name="service-account-app" />
+        <module name="service-returnOrder-bean" />
+        <module name="ares-core" />
+        <module name="service-live-bean" />
+        <module name="ares-thrift-server" />
+        <module name="service-shopcart-bean" />
+        <module name="service-customer-bean" />
+        <module name="service-goods-api" />
+        <module name="service-advertising-bean" />
+        <module name="service-advertising-api" />
+        <module name="logistics-core" />
+        <module name="perseus-app" />
+        <module name="ares-app" />
+        <module name="ares-api" />
+        <module name="service-pay-app" />
+        <module name="service-wallet-app" />
+        <module name="service-live-core" />
+        <module name="service-wallet-bean" />
+        <module name="service-order-api" />
+        <module name="service-es" />
+        <module name="service-advertising-core" />
+        <module name="service-account-core" />
+        <module name="service-order-app" />
+        <module name="micro-service" />
+        <module name="service-common" />
+        <module name="service-goods-app" />
+        <module name="service-setting-core" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ares-api" options="-parameters" />
+      <module name="ares-app" options="-parameters" />
+      <module name="ares-core" options="-parameters" />
+      <module name="ares-parent" options="-parameters" />
+      <module name="ares-thrift-server" options="-parameters" />
+      <module name="b2b-platform" options="-parameters" />
+      <module name="beluga-tms-api" options="-parameters" />
+      <module name="bff-callback" options="-parameters" />
+      <module name="bff-manager-base" options="-parameters" />
+      <module name="bff-manager-s2b-boss" options="-parameters" />
+      <module name="bff-manager-s2b-provider" options="-parameters" />
+      <module name="bff-manager-s2b-supplier" options="-parameters" />
+      <module name="bff-manager-store-base" options="-parameters" />
+      <module name="bff-web-2b-mobile" options="-parameters" />
+      <module name="bff-web-2b-pc" options="-parameters" />
+      <module name="bff-web-base" options="-parameters" />
+      <module name="bff-wms-site" options="-parameters" />
+      <module name="logistics-api" options="-parameters" />
+      <module name="logistics-app" options="-parameters" />
+      <module name="logistics-bean" options="-parameters" />
+      <module name="logistics-core" options="-parameters" />
+      <module name="micro-service" options="-parameters" />
+      <module name="mongo-capture" options="-parameters" />
+      <module name="perseus-app" options="-parameters" />
+      <module name="perseus-core" options="-parameters" />
+      <module name="perseus-parent" options="-parameters" />
+      <module name="sbc-logistics" options="-parameters" />
+      <module name="service-account" options="-parameters" />
+      <module name="service-account-api" options="-parameters" />
+      <module name="service-account-app" options="-parameters" />
+      <module name="service-account-bean" options="-parameters" />
+      <module name="service-account-core" options="-parameters" />
+      <module name="service-advertising" options="-parameters" />
+      <module name="service-advertising-api" options="-parameters" />
+      <module name="service-advertising-app" options="-parameters" />
+      <module name="service-advertising-bean" options="-parameters" />
+      <module name="service-advertising-core" options="-parameters" />
+      <module name="service-common" options="-parameters" />
+      <module name="service-customer" options="-parameters" />
+      <module name="service-customer-api" options="-parameters" />
+      <module name="service-customer-app" options="-parameters" />
+      <module name="service-customer-bean" options="-parameters" />
+      <module name="service-customer-core" options="-parameters" />
+      <module name="service-es" options="-parameters" />
+      <module name="service-goods" options="-parameters" />
+      <module name="service-goods-api" options="-parameters" />
+      <module name="service-goods-app" options="-parameters" />
+      <module name="service-goods-bean" options="-parameters" />
+      <module name="service-goods-core" options="-parameters" />
+      <module name="service-live" options="-parameters" />
+      <module name="service-live-api" options="-parameters" />
+      <module name="service-live-app" options="-parameters" />
+      <module name="service-live-bean" options="-parameters" />
+      <module name="service-live-core" options="-parameters" />
+      <module name="service-marketing" options="-parameters" />
+      <module name="service-marketing-api" options="-parameters" />
+      <module name="service-marketing-app" options="-parameters" />
+      <module name="service-marketing-bean" options="-parameters" />
+      <module name="service-marketing-core" options="-parameters" />
+      <module name="service-message" options="-parameters" />
+      <module name="service-message-api" options="-parameters" />
+      <module name="service-message-app" options="-parameters" />
+      <module name="service-message-bean" options="-parameters" />
+      <module name="service-message-core" options="-parameters" />
+      <module name="service-order" options="-parameters" />
+      <module name="service-order-api" options="-parameters" />
+      <module name="service-order-app" options="-parameters" />
+      <module name="service-order-bean" options="-parameters" />
+      <module name="service-order-core" options="-parameters" />
+      <module name="service-pay" options="-parameters" />
+      <module name="service-pay-api" options="-parameters" />
+      <module name="service-pay-app" options="-parameters" />
+      <module name="service-pay-bean" options="-parameters" />
+      <module name="service-pay-core" options="-parameters" />
+      <module name="service-returnOrder" options="-parameters" />
+      <module name="service-returnOrder-api" options="-parameters" />
+      <module name="service-returnOrder-app" options="-parameters" />
+      <module name="service-returnOrder-bean" options="-parameters" />
+      <module name="service-returnOrder-core" options="-parameters" />
+      <module name="service-setting" options="-parameters" />
+      <module name="service-setting-api" options="-parameters" />
+      <module name="service-setting-app" options="-parameters" />
+      <module name="service-setting-bean" options="-parameters" />
+      <module name="service-setting-core" options="-parameters" />
+      <module name="service-shopcart" options="-parameters" />
+      <module name="service-shopcart-api" options="-parameters" />
+      <module name="service-shopcart-app" options="-parameters" />
+      <module name="service-shopcart-bean" options="-parameters" />
+      <module name="service-shopcart-core" options="-parameters" />
+      <module name="service-wallet" options="-parameters" />
+      <module name="service-wallet-api" options="-parameters" />
+      <module name="service-wallet-app" options="-parameters" />
+      <module name="service-wallet-bean" options="-parameters" />
+      <module name="service-wallet-core" options="-parameters" />
+      <module name="service-wms" options="-parameters" />
+      <module name="service-wms-api" options="-parameters" />
+      <module name="service-wms-app" options="-parameters" />
+      <module name="service-wms-bean" options="-parameters" />
+      <module name="service-wms-core" options="-parameters" />
+    </option>
+  </component>
+</project>

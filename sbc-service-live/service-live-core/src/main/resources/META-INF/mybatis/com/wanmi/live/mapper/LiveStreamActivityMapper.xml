@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.activity.dao.LiveStreamActivityMapper">
+    <resultMap id="liveStreamMap" type="com.wanmi.sbc.live.activity.model.root.LiveStreamActivity">
+        <id property="id" column="id"/>
+        <result property="liveId" column="live_id"/>
+        <result property="liveRoomId" column="live_room_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="presentFlag" column="present_flag"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="live_stream_activity_col">
+        id,live_id,live_room_id,activity_id,coupon_id,present_flag,del_flag
+    </sql>
+
+    <select id="liveStreamActivityList" parameterType="int" resultMap="liveStreamMap">
+        select
+        <include refid="live_stream_activity_col" />
+        from live_stream_activity
+        where del_flag=0 and live_room_id=#{para.liveRoomId}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="com.wanmi.sbc.live.api.request.activity.LiveStreamActivityInfoRequest" resultMap="liveStreamMap">
+        select
+        <include refid="live_stream_activity_col" />
+        from live_stream_activity
+        where del_flag = 0 and activity_id=#{activityId}
+        <if test="liveId != null">
+           and live_room_id = #{liveId,jdbcType=BIGINT}
+        </if>
+        limit 1
+    </select>
+
+    <select id="countActivityByActivityId" resultType="long">
+        select
+        count(1)
+        from live_stream_activity
+        where del_flag = 0 and live_room_id=#{liveRoomId} and activity_id=#{activityId}
+    </select>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wanmi.sbc.live.activity.model.root.LiveStreamActivity" useGeneratedKeys="true">
+        insert into live_stream_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">
+                live_id,
+            </if>
+            <if test="liveRoomId != null">
+                live_room_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="presentFlag != null">
+                present_flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">
+                #{liveId,jdbcType=BIGINT},
+            </if>
+            <if test="liveRoomId != null">
+                #{liveRoomId,jdbcType=BIGINT},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="presentFlag != null">
+                #{presentFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.wanmi.sbc.live.activity.model.root.LiveStreamActivity">
+        update live_stream_activity
+        <set>
+            <if test="liveId != null">
+                live_id = #{liveId,jdbcType=BIGINT},
+            </if>
+            <if test="liveRoomId != null">
+                live_room_id = #{liveRoomId,jdbcType=BIGINT},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=VARCHAR},
+            </if>
+            <if test="couponId != null">
+                coupon_id = #{couponId,jdbcType=VARCHAR},
+            </if>
+            <if test="presentFlag != null">
+                present_flag = #{presentFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=TINYINT},
+            </if>
+        </set>
+        where del_flag=0 and live_room_id=#{liveRoomId} and activity_id = #{activityId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateAllByActivityId" parameterType="java.lang.String">
+        update live_stream_activity
+       set present_flag = 0
+        where del_flag = 0 and  activity_id = #{activityId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateAllByLiveRoomId" parameterType="java.lang.Integer">
+        update live_stream_activity
+        set coupon_id = null
+        where del_flag = 0 and live_room_id = #{liveRoomId}
+    </update>
+</mapper>

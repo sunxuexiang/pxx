@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.wanmi</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.1.11-RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.wanmi.sbc</groupId>
+    <artifactId>sbc-logistics</artifactId>
+    <version>xyy-4.0.9-SNAPSHOT</version>
+    <name>sbc-logistics</name>
+    <description>sbc-logistics</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>logistics-app</module>
+        <module>logistics-bean</module>
+        <module>logistics-core</module>
+        <module>logistics-api</module>
+    </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.1.9.RELEASE</spring-boot.version>
+        <mybatis-plus.version>3.5.0</mybatis-plus.version>
+        <xxl-job-core.version>2.0.2</xxl-job-core.version>
+        <hutool.version>5.7.9</hutool.version>
+        <orai18n.version>19.7.0.0</orai18n.version>
+        <lombok.version>1.18.24</lombok.version>
+        <mysql-connector.version>8.0.21</mysql-connector.version>
+        <nacos.version>2.1.0.RELEASE</nacos.version>
+        <wm.micro.service.version>xyy-4.0.9-SNAPSHOT</wm.micro.service.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>2.1.9.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wanmi.sbc</groupId>
+                <artifactId>service-common</artifactId>
+                <version>${wm.micro.service.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.wanmi.sbc</groupId>
+                        <artifactId>micro-service</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!--多数据源配置依赖-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${orai18n.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle.database.nls</groupId>
+                <artifactId>orai18n</artifactId>
+                <version>${orai18n.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <repositories>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <username>${git.username}</username>
+                    <password>${git.password}</password>
+                    <tagNameFormat>logistics-v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

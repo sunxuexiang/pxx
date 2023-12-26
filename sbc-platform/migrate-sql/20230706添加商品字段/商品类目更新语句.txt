@@ -1,0 +1,114 @@
+# 第一步
+INSERT INTO store_cate (
+	store_cate_id,
+	store_id,
+	cate_name,
+	cate_parent_id,
+	cate_img,
+	cate_path,
+	cate_grade,
+	pin_yin,
+	s_pin_yin,
+	create_time,
+	update_time,
+	del_flag,
+	sort,
+	is_default
+
+) SELECT
+	NULL,
+	"123457929",
+	cate_name,
+	"0",
+	cate_img,
+	"0|",
+	"1",
+	cate_id,
+	NULL,
+create_time,
+ update_time,
+ 0,
+ 0,
+ 0
+FROM
+	goods_cate
+WHERE
+	cate_grade = 2;
+
+# 第二步
+INSERT INTO store_cate (
+	store_cate_id,
+	store_id,
+	cate_name,
+	cate_parent_id,
+	cate_img,
+	cate_path,
+	cate_grade,
+	pin_yin,
+	s_pin_yin,
+	create_time,
+	update_time,
+	del_flag,
+	sort,
+	is_default
+) SELECT
+	NULL,
+	"123457929",
+	cate_name,
+	cate_parent_id,
+	cate_img,
+  cate_path,
+	"2",
+	cate_id,
+	NULL,
+
+create_time,
+ update_time,
+ 0,
+ 0,
+ 0
+FROM
+	goods_cate
+WHERE
+	cate_grade = 3;
+
+
+# 第三不
+
+UPDATE store_cate a
+LEFT JOIN
+store_cate b
+ON a.cate_parent_id= b.pin_yin
+SET a.cate_parent_id = b.store_cate_id, a.cate_path= CONCAT("0|",b.store_cate_id,"|") 
+WHERE a.cate_grade = 2 AND a.pin_yin is not null 
+
+
+# 第四步
+UPDATE store_cate SET pin_yin = null 
+
+
+
+
+
+#第五
+INSERT INTO store_cate_goods_rela1 (goods_id, store_cate_id) SELECT
+	goods_id,
+	store_cate_id
+FROM
+	(
+		SELECT
+			goods_id,
+			store_cate_id
+		FROM
+			goods gs
+		LEFT JOIN store_cate sc ON gs.cate_id = sc.pin_yin
+	) a
+
+
+
+
+
+
+
+
+

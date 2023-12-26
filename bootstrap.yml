@@ -1,0 +1,79 @@
+---
+spring:
+  profiles: ares
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: auth
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: setting
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: goods
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: pay
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: customer
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: account
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: marketing
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: order
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: sms
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: crm
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: site
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: mobile
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: supplier
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: pc
+  cloud.nacos.config.enabled: false
+
+---
+spring:
+  profiles: boss
+  cloud.nacos.config.enabled: false

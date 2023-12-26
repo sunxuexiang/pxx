@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wanmi.sbc.live.goods.dao.LiveStreamGoodsMapper">
+    <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.goods.model.root.LiveStreamGoods">
+        <id property="id" column="id"/>
+        <result property="liveId" column="live_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsInfoId" column="goods_info_id"/>
+        <result column="goods_type" jdbcType="BIGINT" property="goodsType" />
+        <result column="goods_status" jdbcType="BIGINT" property="goodsStatus" />
+        <result property="wareId" column="ware_id"/>
+        <result property="explainFlag" column="explain_flag"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="parentGoodsInfoId" column="parent_goods_info_id"/>
+        <result property="storeId" column="store_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="live_stream_goods_col">
+        id,live_id,goods_id,goods_info_id,goods_type, goods_status,ware_id,explain_flag,del_flag,parent_goods_info_id,store_id
+    </sql>
+
+    <select id="countGoodsByGoodsInfoId" resultType="long">
+        select
+        count(1)
+        from live_stream_goods
+        where del_flag = 0 and goods_info_id=#{goodsInfoId} and live_id=#{liveRoomId}
+    </select>
+
+    <select id="findListByReq" resultMap="BaseResultMap" parameterType="com.wanmi.sbc.live.api.request.goods.LiveStreamGoodsListRequest">
+        select
+        <include refid="live_stream_goods_col" />
+        from live_stream_goods
+        where del_flag = 0
+        <if test="liveRoomId != null">
+            and live_id=#{liveRoomId}
+        </if>
+        <if test="goodsType != null">
+          and  goods_type = #{goodsType,jdbcType=BIGINT}
+        </if>
+        <if test="goodsStatus != null">
+          and  goods_status = #{goodsStatus,jdbcType=BIGINT}
+        </if>
+        order by explain_flag desc,id asc
+    </select>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wanmi.sbc.live.goods.model.root.LiveStreamGoods" useGeneratedKeys="true">
+        insert into live_stream_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">
+                live_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsInfoId != null">
+                goods_info_id,
+            </if>
+            <if test="wareId != null">
+                ware_id,
+            </if>
+            <if test="goodsType != null">
+                goods_type,
+            </if>
+            <if test="goodsStatus != null">
+                goods_status,
+            </if>
+            <if test="explainFlag != null">
+                explain_flag,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="parentGoodsInfoId != null">
+                parent_goods_info_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">
+                #{liveId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsInfoId != null">
+                #{goodsInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="wareId != null">
+                #{wareId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsType != null">
+                #{goodsType,jdbcType=BIGINT},
+            </if>
+            <if test="goodsStatus != null">
+                #{goodsStatus,jdbcType=BIGINT},
+            </if>
+            <if test="explainFlag != null">
+                #{explainFlag,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=BIGINT},
+            </if>
+            <if test="parentGoodsInfoId != null">
+                #{goodsInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.wanmi.sbc.live.goods.model.root.LiveStreamGoods">
+        update live_stream_goods
+        <set>
+            <if test="liveId != null">
+                live_id = #{liveId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsInfoId != null">
+                goods_info_id = #{goodsInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="wareId != null">
+                ware_id = #{wareId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsType != null">
+                goods_type = #{goodsType,jdbcType=BIGINT},
+            </if>
+            <if test="goodsStatus != null">
+                goods_status = #{goodsStatus,jdbcType=BIGINT},
+            </if>
+            <if test="explainFlag != null">
+                explain_flag = #{explainFlag,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=BIGINT},
+            </if>
+            <if test="parentGoodsInfoId != null">
+                parent_goods_info_id = #{parentGoodsInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where del_flag = 0 and goods_info_id = #{goodsInfoId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateAllByGoodsInfoId" parameterType="com.wanmi.sbc.live.api.request.goods.LiveStreamGoodsModifyRequest">
+        update live_stream_goods
+        set explain_flag = 0
+        where del_flag = 0 and explain_flag = 1 and goods_info_id != #{goodsInfoId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateAllByLiveRoomId" parameterType="java.lang.Integer">
+        update live_stream_goods
+        set explain_flag = 0
+        where del_flag = 0 and live_id=#{liveRoomId}
+    </update>
+
+    <update id="updateBatchByLiveIdAndGoodsInfoIds" parameterType="com.wanmi.sbc.live.api.request.goods.LiveStreamGoodsModifyRequest">
+        update live_stream_goods
+        set
+         <if test="goodsStatus != null">
+        goods_status = #{goodsStatus,jdbcType=BIGINT}
+         </if>
+        <if test="delFlag != null">
+            del_flag = #{delFlag,jdbcType=BIGINT}
+        </if>
+        where del_flag = 0 and live_id=#{liveRoomId} and  goods_info_id in
+        <foreach collection="goodsInfoIds" index="index" item="item" open="(" separator="," close=")">
+            '${item}'
+        </foreach>
+    </update>
+
+    <select id="findByLiveRoomAndGoodsInfoId" resultMap="BaseResultMap">
+        select
+        <include refid="live_stream_goods_col" />
+        from live_stream_goods
+        where live_id = #{liveRoomId} and goods_info_id = #{goodsInfoId} and del_flag = 0
+    </select>
+</mapper>

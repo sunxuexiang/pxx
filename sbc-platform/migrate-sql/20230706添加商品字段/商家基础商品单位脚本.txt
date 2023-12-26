@@ -1,0 +1,11 @@
+INSERT INTO `store_goods_unit` VALUES (null, 1, '包', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '卷', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '打', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '提', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '支', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '斤', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '桶', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '瓶', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '盒', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '箱', 0, 请填写商户id, now(), now(), '15973150358', NULL);
+INSERT INTO `store_goods_unit` VALUES (null, 1, '袋', 0, 请填写商户id, now(), now(), '15973150358', NULL);

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanmi.sbc.live.stream.dao.LiveStreamLogInfoMapper">
+  <resultMap id="BaseResultMap" type="com.wanmi.sbc.live.stream.model.root.LiveStreamLogInfo">
+    <result column="live_id" jdbcType="INTEGER" property="liveId" />
+    <result column="goods_info_ids" jdbcType="VARCHAR" property="goodsInfoIds" />
+    <result column="activity_ids" jdbcType="VARCHAR" property="activityIds" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    live_id, goods_info_ids, activity_ids, create_time
+  </sql>
+
+  <select id="selectByLiveId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_stream_log_info
+    where live_id=#{liveId} order by create_time desc limit 1
+  </select>
+
+  <insert id="insertSelective" parameterType="com.wanmi.sbc.live.stream.model.root.LiveStreamLogInfo">
+    insert into live_stream_log_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="liveId != null">
+        live_id,
+      </if>
+      <if test="goodsInfoIds != null">
+        goods_info_ids,
+      </if>
+      <if test="activityIds != null">
+        activity_ids,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="liveId != null">
+        #{liveId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsInfoIds != null">
+        #{goodsInfoIds,jdbcType=VARCHAR},
+      </if>
+      <if test="activityIds != null">
+        #{activityIds,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+</mapper>

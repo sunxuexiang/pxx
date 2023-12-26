@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wanmi</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.1.11-RELEASE</version>
+    </parent>
+
+    <groupId>com.wanmi.sbc</groupId>
+    <artifactId>service-message</artifactId>
+    <version>xyy-4.0.9-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <wm.micro.service.version>xyy-4.0.9-SNAPSHOT</wm.micro.service.version>
+        <module.version>1.0.0-RELEASE</module.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+        <poi>3.17</poi>
+        <aliyun.sdk.version>4.1.0</aliyun.sdk.version>
+        <xxl-job-core.version>2.0.2</xxl-job-core.version>
+
+        <sharding-jdbc-spring-boot-starter.version>4.0.0-RC1</sharding-jdbc-spring-boot-starter.version>
+        <druid-spring-boot-starter.version>1.2.12</druid-spring-boot-starter.version>
+    </properties>
+
+    <modules>
+        <module>service-message-api</module>
+        <module>service-message-app</module>
+        <module>service-message-core</module>
+        <module>service-message-bean</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--<dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.18</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache.commons.commons.collections4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons.commons.lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${apache.commons.commons.beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${com.alibaba.fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${com.fasterxml.jackson.core.version}</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wanmi.sbc</groupId>
+                <artifactId>service-message-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wanmi.sbc</groupId>
+                <artifactId>service-message-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wanmi.sbc</groupId>
+                <artifactId>service-message-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wanmi.sbc</groupId>
+                <artifactId>service-message-bean</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun.sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl-job-core.version}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.wanmi.sbc</groupId>
+            <artifactId>service-common</artifactId>
+            <version>${wm.micro.service.version}</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <username>${git.username}</username>
+                    <password>${git.password}</password>
+                    <tagNameFormat>service-message-v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>xyy-private</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/xyy-private/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>local private nexus</name>
+            <url>http://47.97.183.86:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

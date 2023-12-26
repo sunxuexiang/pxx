@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="fdd-sdk-java">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../network/fdd-sdk-java.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

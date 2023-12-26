@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/util
+                        http://www.springframework.org/schema/util/spring-util.xsd" default-lazy-init="true">
+
+    <description>限购库存配置</description>
+
+
+    <util:list id="stockAndPureChainNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+<!--        <ref bean="marketingPureChainNode" />-->
+        <ref bean="areaPurchaseCheckNode" />
+        <ref bean="stockCheckNode" />
+    </util:list>
+
+    <util:list id="tunhuoAndPureChainNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+<!--        <ref bean="marketingPureChainNode" />-->
+        <ref bean="areaPurchaseCheckNode" />
+        <ref bean="inventoryVirtualCheckNode" />
+    </util:list>
+
+
+    <util:list id="tihuoStockChainNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+        <ref bean="stockCheckNode" />
+    </util:list>
+
+
+    <util:list id="pureChainNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+        <ref bean="marketingPureChainNode" />
+        <ref bean="areaPurchaseCheckNode" />
+    </util:list>
+
+
+    <util:list id="stockAndAreaNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+        <ref bean="stockCheckNode" />
+        <ref bean="areaPurchaseCheckNode" />
+    </util:list>
+
+    <util:list id="areaNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+        <ref bean="areaPurchaseCheckNode" />
+    </util:list>
+
+    <util:list id="bulkGoodsInfoStockAndAreaNodeList" value-type="com.wanmi.sbc.returnorder.shopcart.ChainHandle.StockAndPureChainNode">
+        <ref bean="stockCheckNode" />
+        <ref bean="areaPurchaseForBulkGoodsCheckNode" />
+    </util:list>
+
+</beans>
